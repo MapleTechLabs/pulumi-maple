@@ -1,0 +1,102 @@
+name: Release
+
+on:
+    push:
+        tags: ["v*"]
+
+permissions:
+    contents: read
+
+jobs:
+    plugin:
+        name: Provider plugin
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+              with:
+                  fetch-depth: 0
+
+            - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+              with:
+                  go-version-file: provider/go.mod
+                  cache-dependency-path: provider/go.sum
+
+            - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+              with:
+                  args: release --clean
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            # The Go SDK is its own module under sdk/, so it needs its own tag.
+            - name: Tag the Go SDK
+              run: |
+                  git tag "sdk/${GITHUB_REF_NAME}"
+                  git push origin "sdk/${GITHUB_REF_NAME}"
+
+    npm:
+        name: npm
+        needs: plugin
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+              with:
+                  persist-credentials: false
+
+            - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+              with:
+                  go-version-file: provider/go.mod
+                  cache-dependency-path: provider/go.sum
+
+            - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: 22
+                  registry-url: https://registry.npmjs.org
+
+            - uses: pulumi/actions@96c7761824268174e0d2a4e8c7d75671eebd24a7 # v7.1.0
+
+            - name: Build and publish
+              run: |
+                  make build_nodejs VERSION="${GITHUB_REF_NAME#v}"
+                  cd sdk/nodejs/bin && npm publish --access public --provenance
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    pypi:
+        name: PyPI
+        needs: plugin
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        environment: pypi
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+              with:
+                  persist-credentials: false
+
+            - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+              with:
+                  go-version-file: provider/go.mod
+                  cache-dependency-path: provider/go.sum
+
+            - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+              with:
+                  python-version: "3.12"
+
+            - uses: pulumi/actions@96c7761824268174e0d2a4e8c7d75671eebd24a7 # v7.1.0
+
+            - name: Build
+              run: make build_python VERSION="${GITHUB_REF_NAME#v}"
+
+            # Trusted publishing: register this repo and workflow on PyPI, no token.
+            - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
+              with:
+                  packages-dir: sdk/python/bin/

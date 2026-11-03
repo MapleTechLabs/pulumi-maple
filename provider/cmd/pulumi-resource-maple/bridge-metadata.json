@@ -1,0 +1,88 @@
+{
+    "auto-aliasing": {
+        "resources": {
+            "maple_alert_destination": {
+                "current": "maple:index/alertDestination:AlertDestination",
+                "fields": {
+                    "member_user_ids": {
+                        "maxItemsOne": false
+                    }
+                }
+            },
+            "maple_alert_rule": {
+                "current": "maple:index/alertRule:AlertRule",
+                "fields": {
+                    "destination_ids": {
+                        "maxItemsOne": false
+                    },
+                    "environments": {
+                        "maxItemsOne": false
+                    },
+                    "exclude_service_names": {
+                        "maxItemsOne": false
+                    },
+                    "group_by": {
+                        "maxItemsOne": false
+                    },
+                    "service_names": {
+                        "maxItemsOne": false
+                    },
+                    "tags": {
+                        "maxItemsOne": false
+                    }
+                }
+            },
+            "maple_api_key": {
+                "current": "maple:index/apiKey:ApiKey",
+                "fields": {
+                    "scopes": {
+                        "maxItemsOne": false
+                    }
+                }
+            },
+            "maple_dashboard": {
+                "current": "maple:index/dashboard:Dashboard",
+                "fields": {
+                    "tags": {
+                        "maxItemsOne": false
+                    }
+                }
+            },
+            "maple_scrape_target": {
+                "current": "maple:index/scrapeTarget:ScrapeTarget",
+                "fields": {
+                    "exclude_branches": {
+                        "maxItemsOne": false
+                    },
+                    "include_branches": {
+                        "maxItemsOne": false
+                    }
+                }
+            },
+            "maple_uptime_monitor": {
+                "current": "maple:index/uptimeMonitor:UptimeMonitor",
+                "fields": {
+                    "destination_ids": {
+                        "maxItemsOne": false
+                    }
+                }
+            }
+        },
+        "datasources": {
+            "maple_ingest_keys": {
+                "current": "maple:index/getIngestKeys:getIngestKeys"
+            }
+        }
+    },
+    "auto-settings": {},
+    "default-resource-schema-fixups": {
+        "resources": {
+            "maple_alert_destination": {},
+            "maple_alert_rule": {},
+            "maple_api_key": {},
+            "maple_dashboard": {},
+            "maple_scrape_target": {},
+            "maple_uptime_monitor": {}
+        }
+    }
+}

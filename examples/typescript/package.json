@@ -1,0 +1,13 @@
+{
+    "name": "maple-pulumi-example",
+    "private": true,
+    "main": "index.ts",
+    "dependencies": {
+        "@maple-dev/pulumi": "file:../../sdk/nodejs/bin",
+        "@pulumi/pulumi": "^3.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^22.0.0",
+        "typescript": "^5.0.0"
+    }
+}

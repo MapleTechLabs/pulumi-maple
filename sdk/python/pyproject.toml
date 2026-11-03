@@ -1,0 +1,20 @@
+[project]
+  name = "pulumi_maple"
+  description = "Manage Maple dashboards, alert rules, alert destinations, uptime monitors, scrape targets and API keys."
+  dependencies = ["packaging>=24.0", "pulumi>=3.231.0,<4.0.0", "semver>=2.8.1", "typing-extensions>=4.11,<5; python_version < \"3.11\""]
+  keywords = ["maple", "observability", "opentelemetry", "category/monitoring"]
+  readme = "README.md"
+  requires-python = ">=3.9"
+  version = "0.0.1+dev"
+  [project.urls]
+    Homepage = "https://maple.dev/docs/iac/pulumi"
+    Repository = "https://github.com/MapleTechLabs/pulumi-maple"
+
+[build-system]
+  requires = ["setuptools>=61.0"]
+  build-backend = "setuptools.build_meta"
+
+[tool]
+  [tool.setuptools]
+    [tool.setuptools.package-data]
+      pulumi_maple = ["py.typed", "pulumi-plugin.json"]

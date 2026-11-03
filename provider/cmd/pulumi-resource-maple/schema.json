@@ -1,0 +1,1373 @@
+{
+    "name": "maple",
+    "displayName": "Maple",
+    "description": "Manage Maple dashboards, alert rules, alert destinations, uptime monitors, scrape targets and API keys.",
+    "keywords": [
+        "maple",
+        "observability",
+        "opentelemetry",
+        "category/monitoring"
+    ],
+    "homepage": "https://maple.dev/docs/iac/pulumi",
+    "attribution": "This Pulumi package is based on the [`maple` Terraform Provider](https://github.com/MapleTechLabs/terraform-provider-maple).",
+    "repository": "https://github.com/MapleTechLabs/pulumi-maple",
+    "logoUrl": "https://maple.dev/favicon.png",
+    "pluginDownloadURL": "github://api.github.com/MapleTechLabs/pulumi-maple",
+    "publisher": "Maple",
+    "meta": {
+        "moduleFormat": "(.*)(?:/[^/]*)"
+    },
+    "language": {
+        "go": {
+            "importBasePath": "github.com/MapleTechLabs/pulumi-maple/sdk/go/maple",
+            "generateResourceContainerTypes": true,
+            "generateExtraInputTypes": true,
+            "respectSchemaVersion": true
+        },
+        "nodejs": {
+            "packageName": "@maple-dev/pulumi",
+            "packageDescription": "Manage Maple dashboards, alert rules, alert destinations, uptime monitors, scrape targets and API keys.",
+            "readme": "\u003e This provider is a derived work of the [Terraform Provider](https://github.com/MapleTechLabs/terraform-provider-maple)\n\u003e distributed under [MPL 2.0](https://www.mozilla.org/en-US/MPL/2.0/). If you encounter a bug or missing feature,\n\u003e first check the [`pulumi-maple` repo](https://github.com/MapleTechLabs/pulumi-maple/issues); however, if that doesn't turn up anything,\n\u003e please consult the source [`terraform-provider-maple` repo](https://github.com/MapleTechLabs/terraform-provider-maple/issues).",
+            "compatibility": "tfbridge20",
+            "disableUnionOutputTypes": true,
+            "respectSchemaVersion": true
+        },
+        "python": {
+            "packageName": "pulumi_maple",
+            "readme": "\u003e This provider is a derived work of the [Terraform Provider](https://github.com/MapleTechLabs/terraform-provider-maple)\n\u003e distributed under [MPL 2.0](https://www.mozilla.org/en-US/MPL/2.0/). If you encounter a bug or missing feature,\n\u003e first check the [`pulumi-maple` repo](https://github.com/MapleTechLabs/pulumi-maple/issues); however, if that doesn't turn up anything,\n\u003e please consult the source [`terraform-provider-maple` repo](https://github.com/MapleTechLabs/terraform-provider-maple/issues).",
+            "compatibility": "tfbridge20",
+            "respectSchemaVersion": true,
+            "pyproject": {
+                "enabled": true
+            }
+        }
+    },
+    "config": {
+        "variables": {
+            "apiKey": {
+                "type": "string",
+                "description": "A Maple API key (`maple_ak_…`). Defaults to the `MAPLE_API_KEY` environment variable. Alert rules, alert destinations, API keys and ingest keys need a key created by an org admin; a scoped key needs the matching `:write` scope for each resource it manages.",
+                "secret": true
+            },
+            "apiUrl": {
+                "type": "string",
+                "description": "Base URL of the Maple API. Defaults to the `MAPLE_API_URL` environment variable, then `https://api.maple.dev`. Use `https://api.eu.maple.dev` for the EU region."
+            }
+        }
+    },
+    "provider": {
+        "description": "The provider type for the maple package. By default, resources use package-wide configuration\nsettings, however an explicit `Provider` instance may be created and passed during resource\nconstruction to achieve fine-grained programmatic control over provider settings. See the\n[documentation](https://www.pulumi.com/docs/reference/programming-model/#providers) for more information.\n",
+        "properties": {
+            "apiKey": {
+                "type": "string",
+                "description": "A Maple API key (`maple_ak_…`). Defaults to the `MAPLE_API_KEY` environment variable. Alert rules, alert destinations, API keys and ingest keys need a key created by an org admin; a scoped key needs the matching `:write` scope for each resource it manages.",
+                "secret": true
+            },
+            "apiUrl": {
+                "type": "string",
+                "description": "Base URL of the Maple API. Defaults to the `MAPLE_API_URL` environment variable, then `https://api.maple.dev`. Use `https://api.eu.maple.dev` for the EU region."
+            }
+        },
+        "inputProperties": {
+            "apiKey": {
+                "type": "string",
+                "description": "A Maple API key (`maple_ak_…`). Defaults to the `MAPLE_API_KEY` environment variable. Alert rules, alert destinations, API keys and ingest keys need a key created by an org admin; a scoped key needs the matching `:write` scope for each resource it manages.",
+                "secret": true
+            },
+            "apiUrl": {
+                "type": "string",
+                "description": "Base URL of the Maple API. Defaults to the `MAPLE_API_URL` environment variable, then `https://api.maple.dev`. Use `https://api.eu.maple.dev` for the EU region."
+            }
+        },
+        "methods": {
+            "terraformConfig": "pulumi:providers:maple/terraformConfig"
+        }
+    },
+    "resources": {
+        "maple:index/alertDestination:AlertDestination": {
+            "description": "A notification channel that alert rules and uptime monitors deliver to. Credentials are write-only in the API, so Terraform cannot detect changes made to them outside Terraform.\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as maple from \"@maple-dev/pulumi\";\n\nconst pagerduty = new maple.AlertDestination(\"pagerduty\", {\n    type: \"pagerduty\",\n    name: \"Primary on-call\",\n    integrationKey: pagerdutyIntegrationKey,\n});\nconst webhook = new maple.AlertDestination(\"webhook\", {\n    type: \"webhook\",\n    name: \"Incident bot\",\n    url: \"https://hooks.example.com/maple\",\n    signingSecret: webhookSigningSecret,\n});\nconst teamEmail = new maple.AlertDestination(\"team_email\", {\n    type: \"email\",\n    name: \"Checkout team\",\n    memberUserIds: [\"user_2abc…\"],\n});\n```\n```python\nimport pulumi\nimport pulumi_maple as maple\n\npagerduty = maple.AlertDestination(\"pagerduty\",\n    type=\"pagerduty\",\n    name=\"Primary on-call\",\n    integration_key=pagerduty_integration_key)\nwebhook = maple.AlertDestination(\"webhook\",\n    type=\"webhook\",\n    name=\"Incident bot\",\n    url=\"https://hooks.example.com/maple\",\n    signing_secret=webhook_signing_secret)\nteam_email = maple.AlertDestination(\"team_email\",\n    type=\"email\",\n    name=\"Checkout team\",\n    member_user_ids=[\"user_2abc…\"])\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing Pulumi;\nusing Maple = Pulumi.Maple;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var pagerduty = new Maple.AlertDestination(\"pagerduty\", new()\n    {\n        Type = \"pagerduty\",\n        Name = \"Primary on-call\",\n        IntegrationKey = pagerdutyIntegrationKey,\n    });\n\n    var webhook = new Maple.AlertDestination(\"webhook\", new()\n    {\n        Type = \"webhook\",\n        Name = \"Incident bot\",\n        Url = \"https://hooks.example.com/maple\",\n        SigningSecret = webhookSigningSecret,\n    });\n\n    var teamEmail = new Maple.AlertDestination(\"team_email\", new()\n    {\n        Type = \"email\",\n        Name = \"Checkout team\",\n        MemberUserIds = new[]\n        {\n            \"user_2abc…\",\n        },\n    });\n\n});\n```\n```go\npackage main\n\nimport (\n\t\"github.com/MapleTechLabs/pulumi-maple/sdk/go/maple\"\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\t_, err := maple.NewAlertDestination(ctx, \"pagerduty\", \u0026maple.AlertDestinationArgs{\n\t\t\tType:           pulumi.String(\"pagerduty\"),\n\t\t\tName:           pulumi.String(\"Primary on-call\"),\n\t\t\tIntegrationKey: pulumi.Any(pagerdutyIntegrationKey),\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\t_, err = maple.NewAlertDestination(ctx, \"webhook\", \u0026maple.AlertDestinationArgs{\n\t\t\tType:          pulumi.String(\"webhook\"),\n\t\t\tName:          pulumi.String(\"Incident bot\"),\n\t\t\tUrl:           pulumi.String(\"https://hooks.example.com/maple\"),\n\t\t\tSigningSecret: pulumi.Any(webhookSigningSecret),\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\t_, err = maple.NewAlertDestination(ctx, \"team_email\", \u0026maple.AlertDestinationArgs{\n\t\t\tType: pulumi.String(\"email\"),\n\t\t\tName: pulumi.String(\"Checkout team\"),\n\t\t\tMemberUserIds: pulumi.StringArray{\n\t\t\t\tpulumi.String(\"user_2abc…\"),\n\t\t\t},\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\treturn nil\n\t})\n}\n```\n```hcl\nterraform {\n  required_providers {\n    maple = {\n      source = \"pulumi/maple\"\n    }\n  }\n}\n\nresource \"maple_alert_destination\" \"pagerduty\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  type            = \"pagerduty\"\n  name            = \"Primary on-call\"\n  integration_key = pagerdutyIntegrationKey\n}\nresource \"maple_alert_destination\" \"webhook\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  type           = \"webhook\"\n  name           = \"Incident bot\"\n  url            = \"https://hooks.example.com/maple\"\n  signing_secret = webhookSigningSecret\n}\nresource \"maple_alert_destination\" \"team_email\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  type            = \"email\"\n  name            = \"Checkout team\"\n  member_user_ids = [\"user_2abc…\"]\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.maple.AlertDestination;\nimport com.pulumi.maple.AlertDestinationArgs;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        var pagerduty = new AlertDestination(\"pagerduty\", AlertDestinationArgs.builder()\n            .type(\"pagerduty\")\n            .name(\"Primary on-call\")\n            .integrationKey(pagerdutyIntegrationKey)\n            .build());\n\n        var webhook = new AlertDestination(\"webhook\", AlertDestinationArgs.builder()\n            .type(\"webhook\")\n            .name(\"Incident bot\")\n            .url(\"https://hooks.example.com/maple\")\n            .signingSecret(webhookSigningSecret)\n            .build());\n\n        var teamEmail = new AlertDestination(\"teamEmail\", AlertDestinationArgs.builder()\n            .type(\"email\")\n            .name(\"Checkout team\")\n            .memberUserIds(\"user_2abc…\")\n            .build());\n\n    }\n}\n```\n```yaml\nresources:\n  pagerduty:\n    type: maple:AlertDestination\n    properties:\n      type: pagerduty\n      name: Primary on-call\n      integrationKey: ${pagerdutyIntegrationKey}\n  webhook:\n    type: maple:AlertDestination\n    properties:\n      type: webhook\n      name: Incident bot\n      url: https://hooks.example.com/maple\n      signingSecret: ${webhookSigningSecret}\n  teamEmail:\n    type: maple:AlertDestination\n    name: team_email\n    properties:\n      type: email\n      name: Checkout team\n      memberUserIds:\n        - user_2abc…\n```\n\u003c!--End PulumiCodeChooser --\u003e\n\n## Import\n\nThe `pulumi import` command can be used, for example:\n\n```sh\n$ pulumi import maple:index/alertDestination:AlertDestination example \u003cid\u003e\n```\n\n",
+            "properties": {
+                "botToken": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`telegram`\" pulumi-lang-dotnet=\"`Telegram`\" pulumi-lang-go=\"`telegram`\" pulumi-lang-python=\"`telegram`\" pulumi-lang-yaml=\"`telegram`\" pulumi-lang-java=\"`telegram`\" pulumi-lang-hcl=\"`telegram`\"\u003e`telegram`\u003c/span\u003e: the bot token.\n",
+                    "secret": true
+                },
+                "channelId": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`chat`\" pulumi-lang-dotnet=\"`Chat`\" pulumi-lang-go=\"`chat`\" pulumi-lang-python=\"`chat`\" pulumi-lang-yaml=\"`chat`\" pulumi-lang-java=\"`chat`\" pulumi-lang-hcl=\"`chat`\"\u003e`chat`\u003c/span\u003e: the channel to post to.\n"
+                },
+                "channelLabel": {
+                    "type": "string",
+                    "description": "Human-readable channel, as shown in Maple.\n"
+                },
+                "chatId": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`telegram`\" pulumi-lang-dotnet=\"`Telegram`\" pulumi-lang-go=\"`telegram`\" pulumi-lang-python=\"`telegram`\" pulumi-lang-yaml=\"`telegram`\" pulumi-lang-java=\"`telegram`\" pulumi-lang-hcl=\"`telegram`\"\u003e`telegram`\u003c/span\u003e: the chat to post to.\n"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether deliveries are sent. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                },
+                "integrationKey": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`pagerduty`\" pulumi-lang-dotnet=\"`Pagerduty`\" pulumi-lang-go=\"`pagerduty`\" pulumi-lang-python=\"`pagerduty`\" pulumi-lang-yaml=\"`pagerduty`\" pulumi-lang-java=\"`pagerduty`\" pulumi-lang-hcl=\"`pagerduty`\"\u003e`pagerduty`\u003c/span\u003e: the Events API v2 integration key.\n",
+                    "secret": true
+                },
+                "memberUserIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`email`\" pulumi-lang-dotnet=\"`Email`\" pulumi-lang-go=\"`email`\" pulumi-lang-python=\"`email`\" pulumi-lang-yaml=\"`email`\" pulumi-lang-java=\"`email`\" pulumi-lang-hcl=\"`email`\"\u003e`email`\u003c/span\u003e: the organization members to email.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Display name.\n"
+                },
+                "signingSecret": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`webhook`\" pulumi-lang-dotnet=\"`Webhook`\" pulumi-lang-go=\"`webhook`\" pulumi-lang-python=\"`webhook`\" pulumi-lang-yaml=\"`webhook`\" pulumi-lang-java=\"`webhook`\" pulumi-lang-hcl=\"`webhook`\"\u003e`webhook`\u003c/span\u003e: secret used to sign each request (optional).\n",
+                    "secret": true
+                },
+                "summary": {
+                    "type": "string",
+                    "description": "One-line description of where alerts go.\n"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Channel type: \u003cspan pulumi-lang-nodejs=\"`pagerduty`\" pulumi-lang-dotnet=\"`Pagerduty`\" pulumi-lang-go=\"`pagerduty`\" pulumi-lang-python=\"`pagerduty`\" pulumi-lang-yaml=\"`pagerduty`\" pulumi-lang-java=\"`pagerduty`\" pulumi-lang-hcl=\"`pagerduty`\"\u003e`pagerduty`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`webhook`\" pulumi-lang-dotnet=\"`Webhook`\" pulumi-lang-go=\"`webhook`\" pulumi-lang-python=\"`webhook`\" pulumi-lang-yaml=\"`webhook`\" pulumi-lang-java=\"`webhook`\" pulumi-lang-hcl=\"`webhook`\"\u003e`webhook`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`discord`\" pulumi-lang-dotnet=\"`Discord`\" pulumi-lang-go=\"`discord`\" pulumi-lang-python=\"`discord`\" pulumi-lang-yaml=\"`discord`\" pulumi-lang-java=\"`discord`\" pulumi-lang-hcl=\"`discord`\"\u003e`discord`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`telegram`\" pulumi-lang-dotnet=\"`Telegram`\" pulumi-lang-go=\"`telegram`\" pulumi-lang-python=\"`telegram`\" pulumi-lang-yaml=\"`telegram`\" pulumi-lang-java=\"`telegram`\" pulumi-lang-hcl=\"`telegram`\"\u003e`telegram`\u003c/span\u003e, `google-chat`, \u003cspan pulumi-lang-nodejs=\"`email`\" pulumi-lang-dotnet=\"`Email`\" pulumi-lang-go=\"`email`\" pulumi-lang-python=\"`email`\" pulumi-lang-yaml=\"`email`\" pulumi-lang-java=\"`email`\" pulumi-lang-hcl=\"`email`\"\u003e`email`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`chat`\" pulumi-lang-dotnet=\"`Chat`\" pulumi-lang-go=\"`chat`\" pulumi-lang-python=\"`chat`\" pulumi-lang-yaml=\"`chat`\" pulumi-lang-java=\"`chat`\" pulumi-lang-hcl=\"`chat`\"\u003e`chat`\u003c/span\u003e. Changing it replaces the destination.\n"
+                },
+                "url": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`webhook`\" pulumi-lang-dotnet=\"`Webhook`\" pulumi-lang-go=\"`webhook`\" pulumi-lang-python=\"`webhook`\" pulumi-lang-yaml=\"`webhook`\" pulumi-lang-java=\"`webhook`\" pulumi-lang-hcl=\"`webhook`\"\u003e`webhook`\u003c/span\u003e: the URL Maple POSTs to. Sensitive, since webhook URLs often carry a token.\n",
+                    "secret": true
+                },
+                "webhookUrl": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`discord`\" pulumi-lang-dotnet=\"`Discord`\" pulumi-lang-go=\"`discord`\" pulumi-lang-python=\"`discord`\" pulumi-lang-yaml=\"`discord`\" pulumi-lang-java=\"`discord`\" pulumi-lang-hcl=\"`discord`\"\u003e`discord`\u003c/span\u003e, `google-chat`: the channel webhook URL.\n",
+                    "secret": true
+                },
+                "workspaceId": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`chat`\" pulumi-lang-dotnet=\"`Chat`\" pulumi-lang-go=\"`chat`\" pulumi-lang-python=\"`chat`\" pulumi-lang-yaml=\"`chat`\" pulumi-lang-java=\"`chat`\" pulumi-lang-hcl=\"`chat`\"\u003e`chat`\u003c/span\u003e: the linked chat workspace. Changing it replaces the destination.\n"
+                }
+            },
+            "required": [
+                "channelLabel",
+                "enabled",
+                "name",
+                "summary",
+                "type"
+            ],
+            "inputProperties": {
+                "botToken": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`telegram`\" pulumi-lang-dotnet=\"`Telegram`\" pulumi-lang-go=\"`telegram`\" pulumi-lang-python=\"`telegram`\" pulumi-lang-yaml=\"`telegram`\" pulumi-lang-java=\"`telegram`\" pulumi-lang-hcl=\"`telegram`\"\u003e`telegram`\u003c/span\u003e: the bot token.\n",
+                    "secret": true
+                },
+                "channelId": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`chat`\" pulumi-lang-dotnet=\"`Chat`\" pulumi-lang-go=\"`chat`\" pulumi-lang-python=\"`chat`\" pulumi-lang-yaml=\"`chat`\" pulumi-lang-java=\"`chat`\" pulumi-lang-hcl=\"`chat`\"\u003e`chat`\u003c/span\u003e: the channel to post to.\n"
+                },
+                "chatId": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`telegram`\" pulumi-lang-dotnet=\"`Telegram`\" pulumi-lang-go=\"`telegram`\" pulumi-lang-python=\"`telegram`\" pulumi-lang-yaml=\"`telegram`\" pulumi-lang-java=\"`telegram`\" pulumi-lang-hcl=\"`telegram`\"\u003e`telegram`\u003c/span\u003e: the chat to post to.\n"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether deliveries are sent. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                },
+                "integrationKey": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`pagerduty`\" pulumi-lang-dotnet=\"`Pagerduty`\" pulumi-lang-go=\"`pagerduty`\" pulumi-lang-python=\"`pagerduty`\" pulumi-lang-yaml=\"`pagerduty`\" pulumi-lang-java=\"`pagerduty`\" pulumi-lang-hcl=\"`pagerduty`\"\u003e`pagerduty`\u003c/span\u003e: the Events API v2 integration key.\n",
+                    "secret": true
+                },
+                "memberUserIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`email`\" pulumi-lang-dotnet=\"`Email`\" pulumi-lang-go=\"`email`\" pulumi-lang-python=\"`email`\" pulumi-lang-yaml=\"`email`\" pulumi-lang-java=\"`email`\" pulumi-lang-hcl=\"`email`\"\u003e`email`\u003c/span\u003e: the organization members to email.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Display name.\n"
+                },
+                "signingSecret": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`webhook`\" pulumi-lang-dotnet=\"`Webhook`\" pulumi-lang-go=\"`webhook`\" pulumi-lang-python=\"`webhook`\" pulumi-lang-yaml=\"`webhook`\" pulumi-lang-java=\"`webhook`\" pulumi-lang-hcl=\"`webhook`\"\u003e`webhook`\u003c/span\u003e: secret used to sign each request (optional).\n",
+                    "secret": true
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Channel type: \u003cspan pulumi-lang-nodejs=\"`pagerduty`\" pulumi-lang-dotnet=\"`Pagerduty`\" pulumi-lang-go=\"`pagerduty`\" pulumi-lang-python=\"`pagerduty`\" pulumi-lang-yaml=\"`pagerduty`\" pulumi-lang-java=\"`pagerduty`\" pulumi-lang-hcl=\"`pagerduty`\"\u003e`pagerduty`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`webhook`\" pulumi-lang-dotnet=\"`Webhook`\" pulumi-lang-go=\"`webhook`\" pulumi-lang-python=\"`webhook`\" pulumi-lang-yaml=\"`webhook`\" pulumi-lang-java=\"`webhook`\" pulumi-lang-hcl=\"`webhook`\"\u003e`webhook`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`discord`\" pulumi-lang-dotnet=\"`Discord`\" pulumi-lang-go=\"`discord`\" pulumi-lang-python=\"`discord`\" pulumi-lang-yaml=\"`discord`\" pulumi-lang-java=\"`discord`\" pulumi-lang-hcl=\"`discord`\"\u003e`discord`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`telegram`\" pulumi-lang-dotnet=\"`Telegram`\" pulumi-lang-go=\"`telegram`\" pulumi-lang-python=\"`telegram`\" pulumi-lang-yaml=\"`telegram`\" pulumi-lang-java=\"`telegram`\" pulumi-lang-hcl=\"`telegram`\"\u003e`telegram`\u003c/span\u003e, `google-chat`, \u003cspan pulumi-lang-nodejs=\"`email`\" pulumi-lang-dotnet=\"`Email`\" pulumi-lang-go=\"`email`\" pulumi-lang-python=\"`email`\" pulumi-lang-yaml=\"`email`\" pulumi-lang-java=\"`email`\" pulumi-lang-hcl=\"`email`\"\u003e`email`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`chat`\" pulumi-lang-dotnet=\"`Chat`\" pulumi-lang-go=\"`chat`\" pulumi-lang-python=\"`chat`\" pulumi-lang-yaml=\"`chat`\" pulumi-lang-java=\"`chat`\" pulumi-lang-hcl=\"`chat`\"\u003e`chat`\u003c/span\u003e. Changing it replaces the destination.\n"
+                },
+                "url": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`webhook`\" pulumi-lang-dotnet=\"`Webhook`\" pulumi-lang-go=\"`webhook`\" pulumi-lang-python=\"`webhook`\" pulumi-lang-yaml=\"`webhook`\" pulumi-lang-java=\"`webhook`\" pulumi-lang-hcl=\"`webhook`\"\u003e`webhook`\u003c/span\u003e: the URL Maple POSTs to. Sensitive, since webhook URLs often carry a token.\n",
+                    "secret": true
+                },
+                "webhookUrl": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`discord`\" pulumi-lang-dotnet=\"`Discord`\" pulumi-lang-go=\"`discord`\" pulumi-lang-python=\"`discord`\" pulumi-lang-yaml=\"`discord`\" pulumi-lang-java=\"`discord`\" pulumi-lang-hcl=\"`discord`\"\u003e`discord`\u003c/span\u003e, `google-chat`: the channel webhook URL.\n",
+                    "secret": true
+                },
+                "workspaceId": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`chat`\" pulumi-lang-dotnet=\"`Chat`\" pulumi-lang-go=\"`chat`\" pulumi-lang-python=\"`chat`\" pulumi-lang-yaml=\"`chat`\" pulumi-lang-java=\"`chat`\" pulumi-lang-hcl=\"`chat`\"\u003e`chat`\u003c/span\u003e: the linked chat workspace. Changing it replaces the destination.\n"
+                }
+            },
+            "requiredInputs": [
+                "name",
+                "type"
+            ],
+            "stateInputs": {
+                "description": "Input properties used for looking up and filtering AlertDestination resources.\n",
+                "properties": {
+                    "botToken": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`telegram`\" pulumi-lang-dotnet=\"`Telegram`\" pulumi-lang-go=\"`telegram`\" pulumi-lang-python=\"`telegram`\" pulumi-lang-yaml=\"`telegram`\" pulumi-lang-java=\"`telegram`\" pulumi-lang-hcl=\"`telegram`\"\u003e`telegram`\u003c/span\u003e: the bot token.\n",
+                        "secret": true
+                    },
+                    "channelId": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`chat`\" pulumi-lang-dotnet=\"`Chat`\" pulumi-lang-go=\"`chat`\" pulumi-lang-python=\"`chat`\" pulumi-lang-yaml=\"`chat`\" pulumi-lang-java=\"`chat`\" pulumi-lang-hcl=\"`chat`\"\u003e`chat`\u003c/span\u003e: the channel to post to.\n"
+                    },
+                    "channelLabel": {
+                        "type": "string",
+                        "description": "Human-readable channel, as shown in Maple.\n"
+                    },
+                    "chatId": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`telegram`\" pulumi-lang-dotnet=\"`Telegram`\" pulumi-lang-go=\"`telegram`\" pulumi-lang-python=\"`telegram`\" pulumi-lang-yaml=\"`telegram`\" pulumi-lang-java=\"`telegram`\" pulumi-lang-hcl=\"`telegram`\"\u003e`telegram`\u003c/span\u003e: the chat to post to.\n"
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Whether deliveries are sent. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                    },
+                    "integrationKey": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`pagerduty`\" pulumi-lang-dotnet=\"`Pagerduty`\" pulumi-lang-go=\"`pagerduty`\" pulumi-lang-python=\"`pagerduty`\" pulumi-lang-yaml=\"`pagerduty`\" pulumi-lang-java=\"`pagerduty`\" pulumi-lang-hcl=\"`pagerduty`\"\u003e`pagerduty`\u003c/span\u003e: the Events API v2 integration key.\n",
+                        "secret": true
+                    },
+                    "memberUserIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`email`\" pulumi-lang-dotnet=\"`Email`\" pulumi-lang-go=\"`email`\" pulumi-lang-python=\"`email`\" pulumi-lang-yaml=\"`email`\" pulumi-lang-java=\"`email`\" pulumi-lang-hcl=\"`email`\"\u003e`email`\u003c/span\u003e: the organization members to email.\n"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Display name.\n"
+                    },
+                    "signingSecret": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`webhook`\" pulumi-lang-dotnet=\"`Webhook`\" pulumi-lang-go=\"`webhook`\" pulumi-lang-python=\"`webhook`\" pulumi-lang-yaml=\"`webhook`\" pulumi-lang-java=\"`webhook`\" pulumi-lang-hcl=\"`webhook`\"\u003e`webhook`\u003c/span\u003e: secret used to sign each request (optional).\n",
+                        "secret": true
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "One-line description of where alerts go.\n"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Channel type: \u003cspan pulumi-lang-nodejs=\"`pagerduty`\" pulumi-lang-dotnet=\"`Pagerduty`\" pulumi-lang-go=\"`pagerduty`\" pulumi-lang-python=\"`pagerduty`\" pulumi-lang-yaml=\"`pagerduty`\" pulumi-lang-java=\"`pagerduty`\" pulumi-lang-hcl=\"`pagerduty`\"\u003e`pagerduty`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`webhook`\" pulumi-lang-dotnet=\"`Webhook`\" pulumi-lang-go=\"`webhook`\" pulumi-lang-python=\"`webhook`\" pulumi-lang-yaml=\"`webhook`\" pulumi-lang-java=\"`webhook`\" pulumi-lang-hcl=\"`webhook`\"\u003e`webhook`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`discord`\" pulumi-lang-dotnet=\"`Discord`\" pulumi-lang-go=\"`discord`\" pulumi-lang-python=\"`discord`\" pulumi-lang-yaml=\"`discord`\" pulumi-lang-java=\"`discord`\" pulumi-lang-hcl=\"`discord`\"\u003e`discord`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`telegram`\" pulumi-lang-dotnet=\"`Telegram`\" pulumi-lang-go=\"`telegram`\" pulumi-lang-python=\"`telegram`\" pulumi-lang-yaml=\"`telegram`\" pulumi-lang-java=\"`telegram`\" pulumi-lang-hcl=\"`telegram`\"\u003e`telegram`\u003c/span\u003e, `google-chat`, \u003cspan pulumi-lang-nodejs=\"`email`\" pulumi-lang-dotnet=\"`Email`\" pulumi-lang-go=\"`email`\" pulumi-lang-python=\"`email`\" pulumi-lang-yaml=\"`email`\" pulumi-lang-java=\"`email`\" pulumi-lang-hcl=\"`email`\"\u003e`email`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`chat`\" pulumi-lang-dotnet=\"`Chat`\" pulumi-lang-go=\"`chat`\" pulumi-lang-python=\"`chat`\" pulumi-lang-yaml=\"`chat`\" pulumi-lang-java=\"`chat`\" pulumi-lang-hcl=\"`chat`\"\u003e`chat`\u003c/span\u003e. Changing it replaces the destination.\n"
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`webhook`\" pulumi-lang-dotnet=\"`Webhook`\" pulumi-lang-go=\"`webhook`\" pulumi-lang-python=\"`webhook`\" pulumi-lang-yaml=\"`webhook`\" pulumi-lang-java=\"`webhook`\" pulumi-lang-hcl=\"`webhook`\"\u003e`webhook`\u003c/span\u003e: the URL Maple POSTs to. Sensitive, since webhook URLs often carry a token.\n",
+                        "secret": true
+                    },
+                    "webhookUrl": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`discord`\" pulumi-lang-dotnet=\"`Discord`\" pulumi-lang-go=\"`discord`\" pulumi-lang-python=\"`discord`\" pulumi-lang-yaml=\"`discord`\" pulumi-lang-java=\"`discord`\" pulumi-lang-hcl=\"`discord`\"\u003e`discord`\u003c/span\u003e, `google-chat`: the channel webhook URL.\n",
+                        "secret": true
+                    },
+                    "workspaceId": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`chat`\" pulumi-lang-dotnet=\"`Chat`\" pulumi-lang-go=\"`chat`\" pulumi-lang-python=\"`chat`\" pulumi-lang-yaml=\"`chat`\" pulumi-lang-java=\"`chat`\" pulumi-lang-hcl=\"`chat`\"\u003e`chat`\u003c/span\u003e: the linked chat workspace. Changing it replaces the destination.\n"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "maple:index/alertRule:AlertRule": {
+            "description": "A Maple alert rule. Signal-specific fields (\u003cspan pulumi-lang-nodejs=\"`apdexThresholdMs`\" pulumi-lang-dotnet=\"`ApdexThresholdMs`\" pulumi-lang-go=\"`apdexThresholdMs`\" pulumi-lang-python=\"`apdex_threshold_ms`\" pulumi-lang-yaml=\"`apdexThresholdMs`\" pulumi-lang-java=\"`apdexThresholdMs`\" pulumi-lang-hcl=\"`apdex_threshold_ms`\"\u003e`apdexThresholdMs`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`queryBuilderDraft`\" pulumi-lang-dotnet=\"`QueryBuilderDraft`\" pulumi-lang-go=\"`queryBuilderDraft`\" pulumi-lang-python=\"`query_builder_draft`\" pulumi-lang-yaml=\"`queryBuilderDraft`\" pulumi-lang-java=\"`queryBuilderDraft`\" pulumi-lang-hcl=\"`query_builder_draft`\"\u003e`queryBuilderDraft`\u003c/span\u003e, `raw_query_*`) are validated by the API against \u003cspan pulumi-lang-nodejs=\"`signalType`\" pulumi-lang-dotnet=\"`SignalType`\" pulumi-lang-go=\"`signalType`\" pulumi-lang-python=\"`signal_type`\" pulumi-lang-yaml=\"`signalType`\" pulumi-lang-java=\"`signalType`\" pulumi-lang-hcl=\"`signal_type`\"\u003e`signalType`\u003c/span\u003e.\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as maple from \"@maple-dev/pulumi\";\n\nconst checkoutErrors = new maple.AlertRule(\"checkout_errors\", {\n    name: \"Checkout error rate\",\n    signalType: \"error_rate\",\n    comparator: \"gt\",\n    severity: \"critical\",\n    threshold: 0.05,\n    windowMinutes: 5,\n    serviceNames: [\"checkout\"],\n    tags: [\"checkout\"],\n    destinationIds: [pagerduty.id],\n    notes: \"Runbook: https://wiki.example.com/checkout\",\n});\n// Warn early, page later: one rule, two tiers.\nconst checkoutLatency = new maple.AlertRule(\"checkout_latency\", {\n    name: \"Checkout p95 latency\",\n    signalType: \"p95_latency\",\n    comparator: \"gt\",\n    windowMinutes: 10,\n    serviceNames: [\"checkout\"],\n    thresholds: JSON.stringify([\n        {\n            severity: \"warning\",\n            value: 800,\n            destination_ids: [teamEmail.id],\n        },\n        {\n            severity: \"critical\",\n            value: 2000,\n            destination_ids: [pagerduty.id],\n        },\n    ]),\n});\n```\n```python\nimport pulumi\nimport json\nimport pulumi_maple as maple\n\ncheckout_errors = maple.AlertRule(\"checkout_errors\",\n    name=\"Checkout error rate\",\n    signal_type=\"error_rate\",\n    comparator=\"gt\",\n    severity=\"critical\",\n    threshold=0.05,\n    window_minutes=5,\n    service_names=[\"checkout\"],\n    tags=[\"checkout\"],\n    destination_ids=[pagerduty[\"id\"]],\n    notes=\"Runbook: https://wiki.example.com/checkout\")\n# Warn early, page later: one rule, two tiers.\ncheckout_latency = maple.AlertRule(\"checkout_latency\",\n    name=\"Checkout p95 latency\",\n    signal_type=\"p95_latency\",\n    comparator=\"gt\",\n    window_minutes=10,\n    service_names=[\"checkout\"],\n    thresholds=json.dumps([\n        {\n            \"severity\": \"warning\",\n            \"value\": 800,\n            \"destination_ids\": [team_email[\"id\"]],\n        },\n        {\n            \"severity\": \"critical\",\n            \"value\": 2000,\n            \"destination_ids\": [pagerduty[\"id\"]],\n        },\n    ]))\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing System.Text.Json;\nusing Pulumi;\nusing Maple = Pulumi.Maple;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var checkoutErrors = new Maple.AlertRule(\"checkout_errors\", new()\n    {\n        Name = \"Checkout error rate\",\n        SignalType = \"error_rate\",\n        Comparator = \"gt\",\n        Severity = \"critical\",\n        Threshold = 0.05,\n        WindowMinutes = 5,\n        ServiceNames = new[]\n        {\n            \"checkout\",\n        },\n        Tags = new[]\n        {\n            \"checkout\",\n        },\n        DestinationIds = new[]\n        {\n            pagerduty.Id,\n        },\n        Notes = \"Runbook: https://wiki.example.com/checkout\",\n    });\n\n    // Warn early, page later: one rule, two tiers.\n    var checkoutLatency = new Maple.AlertRule(\"checkout_latency\", new()\n    {\n        Name = \"Checkout p95 latency\",\n        SignalType = \"p95_latency\",\n        Comparator = \"gt\",\n        WindowMinutes = 10,\n        ServiceNames = new[]\n        {\n            \"checkout\",\n        },\n        Thresholds = JsonSerializer.Serialize(new[]\n        {\n            new Dictionary\u003cstring, object?\u003e\n            {\n                [\"severity\"] = \"warning\",\n                [\"value\"] = 800,\n                [\"destination_ids\"] = new[]\n                {\n                    teamEmail.Id,\n                },\n            },\n            new Dictionary\u003cstring, object?\u003e\n            {\n                [\"severity\"] = \"critical\",\n                [\"value\"] = 2000,\n                [\"destination_ids\"] = new[]\n                {\n                    pagerduty.Id,\n                },\n            },\n        }),\n    });\n\n});\n```\n```go\npackage main\n\nimport (\n\t\"encoding/json\"\n\n\t\"github.com/MapleTechLabs/pulumi-maple/sdk/go/maple\"\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\t_, err := maple.NewAlertRule(ctx, \"checkout_errors\", \u0026maple.AlertRuleArgs{\n\t\t\tName:          pulumi.String(\"Checkout error rate\"),\n\t\t\tSignalType:    pulumi.String(\"error_rate\"),\n\t\t\tComparator:    pulumi.String(\"gt\"),\n\t\t\tSeverity:      pulumi.String(\"critical\"),\n\t\t\tThreshold:     pulumi.Float64(0.05),\n\t\t\tWindowMinutes: pulumi.Int(5),\n\t\t\tServiceNames: pulumi.StringArray{\n\t\t\t\tpulumi.String(\"checkout\"),\n\t\t\t},\n\t\t\tTags: pulumi.StringArray{\n\t\t\t\tpulumi.String(\"checkout\"),\n\t\t\t},\n\t\t\tDestinationIds: pulumi.StringArray{\n\t\t\t\tpagerduty.Id,\n\t\t\t},\n\t\t\tNotes: pulumi.String(\"Runbook: https://wiki.example.com/checkout\"),\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\ttmpJSON0, err := json.Marshal([]interface{}{\n\t\t\tmap[string]interface{}{\n\t\t\t\t\"severity\": \"warning\",\n\t\t\t\t\"value\":    800,\n\t\t\t\t\"destination_ids\": []interface{}{\n\t\t\t\t\tteamEmail.Id,\n\t\t\t\t},\n\t\t\t},\n\t\t\tmap[string]interface{}{\n\t\t\t\t\"severity\": \"critical\",\n\t\t\t\t\"value\":    2000,\n\t\t\t\t\"destination_ids\": []interface{}{\n\t\t\t\t\tpagerduty.Id,\n\t\t\t\t},\n\t\t\t},\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\tjson0 := string(tmpJSON0)\n\t\t// Warn early, page later: one rule, two tiers.\n\t\t_, err = maple.NewAlertRule(ctx, \"checkout_latency\", \u0026maple.AlertRuleArgs{\n\t\t\tName:          pulumi.String(\"Checkout p95 latency\"),\n\t\t\tSignalType:    pulumi.String(\"p95_latency\"),\n\t\t\tComparator:    pulumi.String(\"gt\"),\n\t\t\tWindowMinutes: pulumi.Int(10),\n\t\t\tServiceNames: pulumi.StringArray{\n\t\t\t\tpulumi.String(\"checkout\"),\n\t\t\t},\n\t\t\tThresholds: pulumi.String(json0),\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\treturn nil\n\t})\n}\n```\n```hcl\nterraform {\n  required_providers {\n    maple = {\n      source = \"pulumi/maple\"\n    }\n  }\n}\n\nresource \"maple_alert_rule\" \"checkout_errors\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  name            = \"Checkout error rate\"\n  signal_type     = \"error_rate\"\n  comparator      = \"gt\"\n  severity        = \"critical\"\n  threshold       = 0.05 # error rates are 0 to 1 ratios\n  window_minutes  = 5\n  service_names   = [\"checkout\"]\n  tags            = [\"checkout\"]\n  destination_ids = [pagerduty.id]\n  notes           = \"Runbook: https://wiki.example.com/checkout\"\n}\n# Warn early, page later: one rule, two tiers.\nresource \"maple_alert_rule\" \"checkout_latency\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  name           = \"Checkout p95 latency\"\n  signal_type    = \"p95_latency\"\n  comparator     = \"gt\"\n  window_minutes = 10\n  service_names  = [\"checkout\"]\n  thresholds = jsonencode([{\n    \"severity\"        = \"warning\"\n    \"value\"           = 800\n    \"destination_ids\" = [teamEmail.id]\n    }, {\n    \"severity\"        = \"critical\"\n    \"value\"           = 2000\n    \"destination_ids\" = [pagerduty.id]\n  }])\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.maple.AlertRule;\nimport com.pulumi.maple.AlertRuleArgs;\nimport static com.pulumi.codegen.internal.Serialization.*;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        var checkoutErrors = new AlertRule(\"checkoutErrors\", AlertRuleArgs.builder()\n            .name(\"Checkout error rate\")\n            .signalType(\"error_rate\")\n            .comparator(\"gt\")\n            .severity(\"critical\")\n            .threshold(0.05)\n            .windowMinutes(5)\n            .serviceNames(\"checkout\")\n            .tags(\"checkout\")\n            .destinationIds(pagerduty.get(\"id\"))\n            .notes(\"Runbook: https://wiki.example.com/checkout\")\n            .build());\n\n        // Warn early, page later: one rule, two tiers.\n        var checkoutLatency = new AlertRule(\"checkoutLatency\", AlertRuleArgs.builder()\n            .name(\"Checkout p95 latency\")\n            .signalType(\"p95_latency\")\n            .comparator(\"gt\")\n            .windowMinutes(10)\n            .serviceNames(\"checkout\")\n            .thresholds(serializeJson(\n                jsonArray(\n                    jsonObject(\n                        jsonProperty(\"severity\", \"warning\"),\n                        jsonProperty(\"value\", 800),\n                        jsonProperty(\"destination_ids\", jsonArray(teamEmail.get(\"id\")))\n                    ), \n                    jsonObject(\n                        jsonProperty(\"severity\", \"critical\"),\n                        jsonProperty(\"value\", 2000),\n                        jsonProperty(\"destination_ids\", jsonArray(pagerduty.get(\"id\")))\n                    )\n                )))\n            .build());\n\n    }\n}\n```\n```yaml\nresources:\n  checkoutErrors:\n    type: maple:AlertRule\n    name: checkout_errors\n    properties:\n      name: Checkout error rate\n      signalType: error_rate\n      comparator: gt\n      severity: critical\n      threshold: 0.05 # error rates are 0 to 1 ratios\n      windowMinutes: 5\n      serviceNames:\n        - checkout\n      tags:\n        - checkout\n      destinationIds:\n        - ${pagerduty.id}\n      notes: 'Runbook: https://wiki.example.com/checkout'\n  # Warn early, page later: one rule, two tiers.\n  checkoutLatency:\n    type: maple:AlertRule\n    name: checkout_latency\n    properties:\n      name: Checkout p95 latency\n      signalType: p95_latency\n      comparator: gt\n      windowMinutes: 10\n      serviceNames:\n        - checkout\n      thresholds:\n        fn::toJSON:\n          - severity: warning\n            value: 800\n            destination_ids:\n              - ${teamEmail.id}\n          - severity: critical\n            value: 2000\n            destination_ids:\n              - ${pagerduty.id}\n```\n\u003c!--End PulumiCodeChooser --\u003e\n\n## Import\n\nThe `pulumi import` command can be used, for example:\n\n```sh\n$ pulumi import maple:index/alertRule:AlertRule example \u003cid\u003e\n```\n\n",
+            "properties": {
+                "alertOnNoData": {
+                    "type": "boolean",
+                    "description": "Count a window with no data as a breach instead of skipping it.\n"
+                },
+                "apdexThresholdMs": {
+                    "type": "number",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`apdex`\" pulumi-lang-dotnet=\"`Apdex`\" pulumi-lang-go=\"`apdex`\" pulumi-lang-python=\"`apdex`\" pulumi-lang-yaml=\"`apdex`\" pulumi-lang-java=\"`apdex`\" pulumi-lang-hcl=\"`apdex`\"\u003e`apdex`\u003c/span\u003e: the satisfied-latency threshold T in milliseconds.\n"
+                },
+                "breachesOutOf": {
+                    "type": "integer",
+                    "description": "Fire on \u003cspan pulumi-lang-nodejs=\"`consecutiveBreachesRequired`\" pulumi-lang-dotnet=\"`ConsecutiveBreachesRequired`\" pulumi-lang-go=\"`consecutiveBreachesRequired`\" pulumi-lang-python=\"`consecutive_breaches_required`\" pulumi-lang-yaml=\"`consecutiveBreachesRequired`\" pulumi-lang-java=\"`consecutiveBreachesRequired`\" pulumi-lang-hcl=\"`consecutive_breaches_required`\"\u003e`consecutiveBreachesRequired`\u003c/span\u003e breaches out of this many evaluations instead of in a row (up to 30).\n"
+                },
+                "comparator": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`gt`\" pulumi-lang-dotnet=\"`Gt`\" pulumi-lang-go=\"`gt`\" pulumi-lang-python=\"`gt`\" pulumi-lang-yaml=\"`gt`\" pulumi-lang-java=\"`gt`\" pulumi-lang-hcl=\"`gt`\"\u003e`gt`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`gte`\" pulumi-lang-dotnet=\"`Gte`\" pulumi-lang-go=\"`gte`\" pulumi-lang-python=\"`gte`\" pulumi-lang-yaml=\"`gte`\" pulumi-lang-java=\"`gte`\" pulumi-lang-hcl=\"`gte`\"\u003e`gte`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`lt`\" pulumi-lang-dotnet=\"`Lt`\" pulumi-lang-go=\"`lt`\" pulumi-lang-python=\"`lt`\" pulumi-lang-yaml=\"`lt`\" pulumi-lang-java=\"`lt`\" pulumi-lang-hcl=\"`lt`\"\u003e`lt`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`lte`\" pulumi-lang-dotnet=\"`Lte`\" pulumi-lang-go=\"`lte`\" pulumi-lang-python=\"`lte`\" pulumi-lang-yaml=\"`lte`\" pulumi-lang-java=\"`lte`\" pulumi-lang-hcl=\"`lte`\"\u003e`lte`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`eq`\" pulumi-lang-dotnet=\"`Eq`\" pulumi-lang-go=\"`eq`\" pulumi-lang-python=\"`eq`\" pulumi-lang-yaml=\"`eq`\" pulumi-lang-java=\"`eq`\" pulumi-lang-hcl=\"`eq`\"\u003e`eq`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`neq`\" pulumi-lang-dotnet=\"`Neq`\" pulumi-lang-go=\"`neq`\" pulumi-lang-python=\"`neq`\" pulumi-lang-yaml=\"`neq`\" pulumi-lang-java=\"`neq`\" pulumi-lang-hcl=\"`neq`\"\u003e`neq`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`between`\" pulumi-lang-dotnet=\"`Between`\" pulumi-lang-go=\"`between`\" pulumi-lang-python=\"`between`\" pulumi-lang-yaml=\"`between`\" pulumi-lang-java=\"`between`\" pulumi-lang-hcl=\"`between`\"\u003e`between`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`notBetween`\" pulumi-lang-dotnet=\"`NotBetween`\" pulumi-lang-go=\"`notBetween`\" pulumi-lang-python=\"`not_between`\" pulumi-lang-yaml=\"`notBetween`\" pulumi-lang-java=\"`notBetween`\" pulumi-lang-hcl=\"`not_between`\"\u003e`notBetween`\u003c/span\u003e.\n"
+                },
+                "consecutiveBreachesRequired": {
+                    "type": "integer",
+                    "description": "Breaching evaluations in a row before the rule fires.\n"
+                },
+                "consecutiveHealthyRequired": {
+                    "type": "integer",
+                    "description": "Healthy evaluations in a row before an incident resolves.\n"
+                },
+                "destinationIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "`dest_…` IDs to notify, typically `maple_alert_destination.\u003cname\u003e.id`.\n"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the rule is evaluated. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                },
+                "environments": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Only evaluate these `deployment.environment` values.\n"
+                },
+                "evaluationIntervalMinutes": {
+                    "type": "integer",
+                    "description": "How often the rule runs: 1, 5, 10, 15, 30 or 60. Unset uses Maple's default schedule.\n"
+                },
+                "excludeServiceNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Skip these services.\n"
+                },
+                "groupBies": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Evaluate each group separately, e.g. `[\"service.name\"]`.\n"
+                },
+                "minimumSampleCount": {
+                    "type": "integer",
+                    "description": "Skip windows with fewer samples than this.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Rule name, unique in the organization.\n"
+                },
+                "notes": {
+                    "type": "string",
+                    "description": "Runbook notes included in notifications.\n"
+                },
+                "notificationTemplate": {
+                    "type": "string",
+                    "description": "Custom notification \u003cspan pulumi-lang-nodejs=\"`title`\" pulumi-lang-dotnet=\"`Title`\" pulumi-lang-go=\"`title`\" pulumi-lang-python=\"`title`\" pulumi-lang-yaml=\"`title`\" pulumi-lang-java=\"`title`\" pulumi-lang-hcl=\"`title`\"\u003e`title`\u003c/span\u003e and \u003cspan pulumi-lang-nodejs=\"`body`\" pulumi-lang-dotnet=\"`Body`\" pulumi-lang-go=\"`body`\" pulumi-lang-python=\"`body`\" pulumi-lang-yaml=\"`body`\" pulumi-lang-java=\"`body`\" pulumi-lang-hcl=\"`body`\"\u003e`body`\u003c/span\u003e, with optional per-channel \u003cspan pulumi-lang-nodejs=\"`overrides`\" pulumi-lang-dotnet=\"`Overrides`\" pulumi-lang-go=\"`overrides`\" pulumi-lang-python=\"`overrides`\" pulumi-lang-yaml=\"`overrides`\" pulumi-lang-java=\"`overrides`\" pulumi-lang-hcl=\"`overrides`\"\u003e`overrides`\u003c/span\u003e. Write it with `jsonencode(...)`.\n"
+                },
+                "queryBuilderDraft": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`builderQuery`\" pulumi-lang-dotnet=\"`BuilderQuery`\" pulumi-lang-go=\"`builderQuery`\" pulumi-lang-python=\"`builder_query`\" pulumi-lang-yaml=\"`builderQuery`\" pulumi-lang-java=\"`builderQuery`\" pulumi-lang-hcl=\"`builder_query`\"\u003e`builderQuery`\u003c/span\u003e: the query builder draft, as the dashboard's query builder saves it. Write it with `jsonencode(...)`.\n"
+                },
+                "rawQueryReducer": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`rawQuery`\" pulumi-lang-dotnet=\"`RawQuery`\" pulumi-lang-go=\"`rawQuery`\" pulumi-lang-python=\"`raw_query`\" pulumi-lang-yaml=\"`rawQuery`\" pulumi-lang-java=\"`rawQuery`\" pulumi-lang-hcl=\"`raw_query`\"\u003e`rawQuery`\u003c/span\u003e: how rows reduce to one value: \u003cspan pulumi-lang-nodejs=\"`identity`\" pulumi-lang-dotnet=\"`Identity`\" pulumi-lang-go=\"`identity`\" pulumi-lang-python=\"`identity`\" pulumi-lang-yaml=\"`identity`\" pulumi-lang-java=\"`identity`\" pulumi-lang-hcl=\"`identity`\"\u003e`identity`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`sum`\" pulumi-lang-dotnet=\"`Sum`\" pulumi-lang-go=\"`sum`\" pulumi-lang-python=\"`sum`\" pulumi-lang-yaml=\"`sum`\" pulumi-lang-java=\"`sum`\" pulumi-lang-hcl=\"`sum`\"\u003e`sum`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`avg`\" pulumi-lang-dotnet=\"`Avg`\" pulumi-lang-go=\"`avg`\" pulumi-lang-python=\"`avg`\" pulumi-lang-yaml=\"`avg`\" pulumi-lang-java=\"`avg`\" pulumi-lang-hcl=\"`avg`\"\u003e`avg`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`min`\" pulumi-lang-dotnet=\"`Min`\" pulumi-lang-go=\"`min`\" pulumi-lang-python=\"`min`\" pulumi-lang-yaml=\"`min`\" pulumi-lang-java=\"`min`\" pulumi-lang-hcl=\"`min`\"\u003e`min`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`max`\" pulumi-lang-dotnet=\"`Max`\" pulumi-lang-go=\"`max`\" pulumi-lang-python=\"`max`\" pulumi-lang-yaml=\"`max`\" pulumi-lang-java=\"`max`\" pulumi-lang-hcl=\"`max`\"\u003e`max`\u003c/span\u003e.\n"
+                },
+                "rawQuerySql": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`rawQuery`\" pulumi-lang-dotnet=\"`RawQuery`\" pulumi-lang-go=\"`rawQuery`\" pulumi-lang-python=\"`raw_query`\" pulumi-lang-yaml=\"`rawQuery`\" pulumi-lang-java=\"`rawQuery`\" pulumi-lang-hcl=\"`raw_query`\"\u003e`rawQuery`\u003c/span\u003e: the SQL to evaluate.\n"
+                },
+                "renotifyIntervalMinutes": {
+                    "type": "integer",
+                    "description": "Re-send notifications for an open incident this often.\n"
+                },
+                "serviceNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Only evaluate these services.\n"
+                },
+                "severity": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`warning`\" pulumi-lang-dotnet=\"`Warning`\" pulumi-lang-go=\"`warning`\" pulumi-lang-python=\"`warning`\" pulumi-lang-yaml=\"`warning`\" pulumi-lang-java=\"`warning`\" pulumi-lang-hcl=\"`warning`\"\u003e`warning`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`critical`\" pulumi-lang-dotnet=\"`Critical`\" pulumi-lang-go=\"`critical`\" pulumi-lang-python=\"`critical`\" pulumi-lang-yaml=\"`critical`\" pulumi-lang-java=\"`critical`\" pulumi-lang-hcl=\"`critical`\"\u003e`critical`\u003c/span\u003e. Derived from \u003cspan pulumi-lang-nodejs=\"`thresholds`\" pulumi-lang-dotnet=\"`Thresholds`\" pulumi-lang-go=\"`thresholds`\" pulumi-lang-python=\"`thresholds`\" pulumi-lang-yaml=\"`thresholds`\" pulumi-lang-java=\"`thresholds`\" pulumi-lang-hcl=\"`thresholds`\"\u003e`thresholds`\u003c/span\u003e when those are set.\n"
+                },
+                "signalType": {
+                    "type": "string",
+                    "description": "What the rule measures: \u003cspan pulumi-lang-nodejs=\"`errorRate`\" pulumi-lang-dotnet=\"`ErrorRate`\" pulumi-lang-go=\"`errorRate`\" pulumi-lang-python=\"`error_rate`\" pulumi-lang-yaml=\"`errorRate`\" pulumi-lang-java=\"`errorRate`\" pulumi-lang-hcl=\"`error_rate`\"\u003e`errorRate`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`p95Latency`\" pulumi-lang-dotnet=\"`P95Latency`\" pulumi-lang-go=\"`p95Latency`\" pulumi-lang-python=\"`p95_latency`\" pulumi-lang-yaml=\"`p95Latency`\" pulumi-lang-java=\"`p95Latency`\" pulumi-lang-hcl=\"`p95_latency`\"\u003e`p95Latency`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`p99Latency`\" pulumi-lang-dotnet=\"`P99Latency`\" pulumi-lang-go=\"`p99Latency`\" pulumi-lang-python=\"`p99_latency`\" pulumi-lang-yaml=\"`p99Latency`\" pulumi-lang-java=\"`p99Latency`\" pulumi-lang-hcl=\"`p99_latency`\"\u003e`p99Latency`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`apdex`\" pulumi-lang-dotnet=\"`Apdex`\" pulumi-lang-go=\"`apdex`\" pulumi-lang-python=\"`apdex`\" pulumi-lang-yaml=\"`apdex`\" pulumi-lang-java=\"`apdex`\" pulumi-lang-hcl=\"`apdex`\"\u003e`apdex`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`throughput`\" pulumi-lang-dotnet=\"`Throughput`\" pulumi-lang-go=\"`throughput`\" pulumi-lang-python=\"`throughput`\" pulumi-lang-yaml=\"`throughput`\" pulumi-lang-java=\"`throughput`\" pulumi-lang-hcl=\"`throughput`\"\u003e`throughput`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`builderQuery`\" pulumi-lang-dotnet=\"`BuilderQuery`\" pulumi-lang-go=\"`builderQuery`\" pulumi-lang-python=\"`builder_query`\" pulumi-lang-yaml=\"`builderQuery`\" pulumi-lang-java=\"`builderQuery`\" pulumi-lang-hcl=\"`builder_query`\"\u003e`builderQuery`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`rawQuery`\" pulumi-lang-dotnet=\"`RawQuery`\" pulumi-lang-go=\"`rawQuery`\" pulumi-lang-python=\"`raw_query`\" pulumi-lang-yaml=\"`rawQuery`\" pulumi-lang-java=\"`rawQuery`\" pulumi-lang-hcl=\"`raw_query`\"\u003e`rawQuery`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`uptime`\" pulumi-lang-dotnet=\"`Uptime`\" pulumi-lang-go=\"`uptime`\" pulumi-lang-python=\"`uptime`\" pulumi-lang-yaml=\"`uptime`\" pulumi-lang-java=\"`uptime`\" pulumi-lang-hcl=\"`uptime`\"\u003e`uptime`\u003c/span\u003e.\n"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Up to 20 lowercase tags.\n"
+                },
+                "threshold": {
+                    "type": "number",
+                    "description": "Breach threshold. Error rates are 0 to 1 ratios.\n"
+                },
+                "thresholdUpper": {
+                    "type": "number",
+                    "description": "Upper bound for \u003cspan pulumi-lang-nodejs=\"`between`\" pulumi-lang-dotnet=\"`Between`\" pulumi-lang-go=\"`between`\" pulumi-lang-python=\"`between`\" pulumi-lang-yaml=\"`between`\" pulumi-lang-java=\"`between`\" pulumi-lang-hcl=\"`between`\"\u003e`between`\u003c/span\u003e and \u003cspan pulumi-lang-nodejs=\"`notBetween`\" pulumi-lang-dotnet=\"`NotBetween`\" pulumi-lang-go=\"`notBetween`\" pulumi-lang-python=\"`not_between`\" pulumi-lang-yaml=\"`notBetween`\" pulumi-lang-java=\"`notBetween`\" pulumi-lang-hcl=\"`not_between`\"\u003e`notBetween`\u003c/span\u003e.\n"
+                },
+                "thresholds": {
+                    "type": "string",
+                    "description": "Tiered thresholds, one per severity, as an alternative to \u003cspan pulumi-lang-nodejs=\"`severity`\" pulumi-lang-dotnet=\"`Severity`\" pulumi-lang-go=\"`severity`\" pulumi-lang-python=\"`severity`\" pulumi-lang-yaml=\"`severity`\" pulumi-lang-java=\"`severity`\" pulumi-lang-hcl=\"`severity`\"\u003e`severity`\u003c/span\u003e + \u003cspan pulumi-lang-nodejs=\"`threshold`\" pulumi-lang-dotnet=\"`Threshold`\" pulumi-lang-go=\"`threshold`\" pulumi-lang-python=\"`threshold`\" pulumi-lang-yaml=\"`threshold`\" pulumi-lang-java=\"`threshold`\" pulumi-lang-hcl=\"`threshold`\"\u003e`threshold`\u003c/span\u003e: a list of `{ severity, value, upper, recovery_value,\u003cspan pulumi-lang-nodejs=\" destinationIds \" pulumi-lang-dotnet=\" DestinationIds \" pulumi-lang-go=\" destinationIds \" pulumi-lang-python=\" destination_ids \" pulumi-lang-yaml=\" destinationIds \" pulumi-lang-java=\" destinationIds \" pulumi-lang-hcl=\" destination_ids \"\u003e destinationIds \u003c/span\u003e}`. Read back from the API when unset. Write it with `jsonencode(...)`.\n"
+                },
+                "windowMinutes": {
+                    "type": "integer",
+                    "description": "Evaluation window, up to 1440.\n"
+                }
+            },
+            "required": [
+                "alertOnNoData",
+                "comparator",
+                "consecutiveBreachesRequired",
+                "consecutiveHealthyRequired",
+                "destinationIds",
+                "enabled",
+                "minimumSampleCount",
+                "name",
+                "renotifyIntervalMinutes",
+                "severity",
+                "signalType",
+                "threshold",
+                "thresholds",
+                "windowMinutes"
+            ],
+            "inputProperties": {
+                "alertOnNoData": {
+                    "type": "boolean",
+                    "description": "Count a window with no data as a breach instead of skipping it.\n"
+                },
+                "apdexThresholdMs": {
+                    "type": "number",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`apdex`\" pulumi-lang-dotnet=\"`Apdex`\" pulumi-lang-go=\"`apdex`\" pulumi-lang-python=\"`apdex`\" pulumi-lang-yaml=\"`apdex`\" pulumi-lang-java=\"`apdex`\" pulumi-lang-hcl=\"`apdex`\"\u003e`apdex`\u003c/span\u003e: the satisfied-latency threshold T in milliseconds.\n"
+                },
+                "breachesOutOf": {
+                    "type": "integer",
+                    "description": "Fire on \u003cspan pulumi-lang-nodejs=\"`consecutiveBreachesRequired`\" pulumi-lang-dotnet=\"`ConsecutiveBreachesRequired`\" pulumi-lang-go=\"`consecutiveBreachesRequired`\" pulumi-lang-python=\"`consecutive_breaches_required`\" pulumi-lang-yaml=\"`consecutiveBreachesRequired`\" pulumi-lang-java=\"`consecutiveBreachesRequired`\" pulumi-lang-hcl=\"`consecutive_breaches_required`\"\u003e`consecutiveBreachesRequired`\u003c/span\u003e breaches out of this many evaluations instead of in a row (up to 30).\n"
+                },
+                "comparator": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`gt`\" pulumi-lang-dotnet=\"`Gt`\" pulumi-lang-go=\"`gt`\" pulumi-lang-python=\"`gt`\" pulumi-lang-yaml=\"`gt`\" pulumi-lang-java=\"`gt`\" pulumi-lang-hcl=\"`gt`\"\u003e`gt`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`gte`\" pulumi-lang-dotnet=\"`Gte`\" pulumi-lang-go=\"`gte`\" pulumi-lang-python=\"`gte`\" pulumi-lang-yaml=\"`gte`\" pulumi-lang-java=\"`gte`\" pulumi-lang-hcl=\"`gte`\"\u003e`gte`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`lt`\" pulumi-lang-dotnet=\"`Lt`\" pulumi-lang-go=\"`lt`\" pulumi-lang-python=\"`lt`\" pulumi-lang-yaml=\"`lt`\" pulumi-lang-java=\"`lt`\" pulumi-lang-hcl=\"`lt`\"\u003e`lt`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`lte`\" pulumi-lang-dotnet=\"`Lte`\" pulumi-lang-go=\"`lte`\" pulumi-lang-python=\"`lte`\" pulumi-lang-yaml=\"`lte`\" pulumi-lang-java=\"`lte`\" pulumi-lang-hcl=\"`lte`\"\u003e`lte`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`eq`\" pulumi-lang-dotnet=\"`Eq`\" pulumi-lang-go=\"`eq`\" pulumi-lang-python=\"`eq`\" pulumi-lang-yaml=\"`eq`\" pulumi-lang-java=\"`eq`\" pulumi-lang-hcl=\"`eq`\"\u003e`eq`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`neq`\" pulumi-lang-dotnet=\"`Neq`\" pulumi-lang-go=\"`neq`\" pulumi-lang-python=\"`neq`\" pulumi-lang-yaml=\"`neq`\" pulumi-lang-java=\"`neq`\" pulumi-lang-hcl=\"`neq`\"\u003e`neq`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`between`\" pulumi-lang-dotnet=\"`Between`\" pulumi-lang-go=\"`between`\" pulumi-lang-python=\"`between`\" pulumi-lang-yaml=\"`between`\" pulumi-lang-java=\"`between`\" pulumi-lang-hcl=\"`between`\"\u003e`between`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`notBetween`\" pulumi-lang-dotnet=\"`NotBetween`\" pulumi-lang-go=\"`notBetween`\" pulumi-lang-python=\"`not_between`\" pulumi-lang-yaml=\"`notBetween`\" pulumi-lang-java=\"`notBetween`\" pulumi-lang-hcl=\"`not_between`\"\u003e`notBetween`\u003c/span\u003e.\n"
+                },
+                "consecutiveBreachesRequired": {
+                    "type": "integer",
+                    "description": "Breaching evaluations in a row before the rule fires.\n"
+                },
+                "consecutiveHealthyRequired": {
+                    "type": "integer",
+                    "description": "Healthy evaluations in a row before an incident resolves.\n"
+                },
+                "destinationIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "`dest_…` IDs to notify, typically `maple_alert_destination.\u003cname\u003e.id`.\n"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the rule is evaluated. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                },
+                "environments": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Only evaluate these `deployment.environment` values.\n"
+                },
+                "evaluationIntervalMinutes": {
+                    "type": "integer",
+                    "description": "How often the rule runs: 1, 5, 10, 15, 30 or 60. Unset uses Maple's default schedule.\n"
+                },
+                "excludeServiceNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Skip these services.\n"
+                },
+                "groupBies": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Evaluate each group separately, e.g. `[\"service.name\"]`.\n"
+                },
+                "minimumSampleCount": {
+                    "type": "integer",
+                    "description": "Skip windows with fewer samples than this.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Rule name, unique in the organization.\n"
+                },
+                "notes": {
+                    "type": "string",
+                    "description": "Runbook notes included in notifications.\n"
+                },
+                "notificationTemplate": {
+                    "type": "string",
+                    "description": "Custom notification \u003cspan pulumi-lang-nodejs=\"`title`\" pulumi-lang-dotnet=\"`Title`\" pulumi-lang-go=\"`title`\" pulumi-lang-python=\"`title`\" pulumi-lang-yaml=\"`title`\" pulumi-lang-java=\"`title`\" pulumi-lang-hcl=\"`title`\"\u003e`title`\u003c/span\u003e and \u003cspan pulumi-lang-nodejs=\"`body`\" pulumi-lang-dotnet=\"`Body`\" pulumi-lang-go=\"`body`\" pulumi-lang-python=\"`body`\" pulumi-lang-yaml=\"`body`\" pulumi-lang-java=\"`body`\" pulumi-lang-hcl=\"`body`\"\u003e`body`\u003c/span\u003e, with optional per-channel \u003cspan pulumi-lang-nodejs=\"`overrides`\" pulumi-lang-dotnet=\"`Overrides`\" pulumi-lang-go=\"`overrides`\" pulumi-lang-python=\"`overrides`\" pulumi-lang-yaml=\"`overrides`\" pulumi-lang-java=\"`overrides`\" pulumi-lang-hcl=\"`overrides`\"\u003e`overrides`\u003c/span\u003e. Write it with `jsonencode(...)`.\n"
+                },
+                "queryBuilderDraft": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`builderQuery`\" pulumi-lang-dotnet=\"`BuilderQuery`\" pulumi-lang-go=\"`builderQuery`\" pulumi-lang-python=\"`builder_query`\" pulumi-lang-yaml=\"`builderQuery`\" pulumi-lang-java=\"`builderQuery`\" pulumi-lang-hcl=\"`builder_query`\"\u003e`builderQuery`\u003c/span\u003e: the query builder draft, as the dashboard's query builder saves it. Write it with `jsonencode(...)`.\n"
+                },
+                "rawQueryReducer": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`rawQuery`\" pulumi-lang-dotnet=\"`RawQuery`\" pulumi-lang-go=\"`rawQuery`\" pulumi-lang-python=\"`raw_query`\" pulumi-lang-yaml=\"`rawQuery`\" pulumi-lang-java=\"`rawQuery`\" pulumi-lang-hcl=\"`raw_query`\"\u003e`rawQuery`\u003c/span\u003e: how rows reduce to one value: \u003cspan pulumi-lang-nodejs=\"`identity`\" pulumi-lang-dotnet=\"`Identity`\" pulumi-lang-go=\"`identity`\" pulumi-lang-python=\"`identity`\" pulumi-lang-yaml=\"`identity`\" pulumi-lang-java=\"`identity`\" pulumi-lang-hcl=\"`identity`\"\u003e`identity`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`sum`\" pulumi-lang-dotnet=\"`Sum`\" pulumi-lang-go=\"`sum`\" pulumi-lang-python=\"`sum`\" pulumi-lang-yaml=\"`sum`\" pulumi-lang-java=\"`sum`\" pulumi-lang-hcl=\"`sum`\"\u003e`sum`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`avg`\" pulumi-lang-dotnet=\"`Avg`\" pulumi-lang-go=\"`avg`\" pulumi-lang-python=\"`avg`\" pulumi-lang-yaml=\"`avg`\" pulumi-lang-java=\"`avg`\" pulumi-lang-hcl=\"`avg`\"\u003e`avg`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`min`\" pulumi-lang-dotnet=\"`Min`\" pulumi-lang-go=\"`min`\" pulumi-lang-python=\"`min`\" pulumi-lang-yaml=\"`min`\" pulumi-lang-java=\"`min`\" pulumi-lang-hcl=\"`min`\"\u003e`min`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`max`\" pulumi-lang-dotnet=\"`Max`\" pulumi-lang-go=\"`max`\" pulumi-lang-python=\"`max`\" pulumi-lang-yaml=\"`max`\" pulumi-lang-java=\"`max`\" pulumi-lang-hcl=\"`max`\"\u003e`max`\u003c/span\u003e.\n"
+                },
+                "rawQuerySql": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`rawQuery`\" pulumi-lang-dotnet=\"`RawQuery`\" pulumi-lang-go=\"`rawQuery`\" pulumi-lang-python=\"`raw_query`\" pulumi-lang-yaml=\"`rawQuery`\" pulumi-lang-java=\"`rawQuery`\" pulumi-lang-hcl=\"`raw_query`\"\u003e`rawQuery`\u003c/span\u003e: the SQL to evaluate.\n"
+                },
+                "renotifyIntervalMinutes": {
+                    "type": "integer",
+                    "description": "Re-send notifications for an open incident this often.\n"
+                },
+                "serviceNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Only evaluate these services.\n"
+                },
+                "severity": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`warning`\" pulumi-lang-dotnet=\"`Warning`\" pulumi-lang-go=\"`warning`\" pulumi-lang-python=\"`warning`\" pulumi-lang-yaml=\"`warning`\" pulumi-lang-java=\"`warning`\" pulumi-lang-hcl=\"`warning`\"\u003e`warning`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`critical`\" pulumi-lang-dotnet=\"`Critical`\" pulumi-lang-go=\"`critical`\" pulumi-lang-python=\"`critical`\" pulumi-lang-yaml=\"`critical`\" pulumi-lang-java=\"`critical`\" pulumi-lang-hcl=\"`critical`\"\u003e`critical`\u003c/span\u003e. Derived from \u003cspan pulumi-lang-nodejs=\"`thresholds`\" pulumi-lang-dotnet=\"`Thresholds`\" pulumi-lang-go=\"`thresholds`\" pulumi-lang-python=\"`thresholds`\" pulumi-lang-yaml=\"`thresholds`\" pulumi-lang-java=\"`thresholds`\" pulumi-lang-hcl=\"`thresholds`\"\u003e`thresholds`\u003c/span\u003e when those are set.\n"
+                },
+                "signalType": {
+                    "type": "string",
+                    "description": "What the rule measures: \u003cspan pulumi-lang-nodejs=\"`errorRate`\" pulumi-lang-dotnet=\"`ErrorRate`\" pulumi-lang-go=\"`errorRate`\" pulumi-lang-python=\"`error_rate`\" pulumi-lang-yaml=\"`errorRate`\" pulumi-lang-java=\"`errorRate`\" pulumi-lang-hcl=\"`error_rate`\"\u003e`errorRate`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`p95Latency`\" pulumi-lang-dotnet=\"`P95Latency`\" pulumi-lang-go=\"`p95Latency`\" pulumi-lang-python=\"`p95_latency`\" pulumi-lang-yaml=\"`p95Latency`\" pulumi-lang-java=\"`p95Latency`\" pulumi-lang-hcl=\"`p95_latency`\"\u003e`p95Latency`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`p99Latency`\" pulumi-lang-dotnet=\"`P99Latency`\" pulumi-lang-go=\"`p99Latency`\" pulumi-lang-python=\"`p99_latency`\" pulumi-lang-yaml=\"`p99Latency`\" pulumi-lang-java=\"`p99Latency`\" pulumi-lang-hcl=\"`p99_latency`\"\u003e`p99Latency`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`apdex`\" pulumi-lang-dotnet=\"`Apdex`\" pulumi-lang-go=\"`apdex`\" pulumi-lang-python=\"`apdex`\" pulumi-lang-yaml=\"`apdex`\" pulumi-lang-java=\"`apdex`\" pulumi-lang-hcl=\"`apdex`\"\u003e`apdex`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`throughput`\" pulumi-lang-dotnet=\"`Throughput`\" pulumi-lang-go=\"`throughput`\" pulumi-lang-python=\"`throughput`\" pulumi-lang-yaml=\"`throughput`\" pulumi-lang-java=\"`throughput`\" pulumi-lang-hcl=\"`throughput`\"\u003e`throughput`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`builderQuery`\" pulumi-lang-dotnet=\"`BuilderQuery`\" pulumi-lang-go=\"`builderQuery`\" pulumi-lang-python=\"`builder_query`\" pulumi-lang-yaml=\"`builderQuery`\" pulumi-lang-java=\"`builderQuery`\" pulumi-lang-hcl=\"`builder_query`\"\u003e`builderQuery`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`rawQuery`\" pulumi-lang-dotnet=\"`RawQuery`\" pulumi-lang-go=\"`rawQuery`\" pulumi-lang-python=\"`raw_query`\" pulumi-lang-yaml=\"`rawQuery`\" pulumi-lang-java=\"`rawQuery`\" pulumi-lang-hcl=\"`raw_query`\"\u003e`rawQuery`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`uptime`\" pulumi-lang-dotnet=\"`Uptime`\" pulumi-lang-go=\"`uptime`\" pulumi-lang-python=\"`uptime`\" pulumi-lang-yaml=\"`uptime`\" pulumi-lang-java=\"`uptime`\" pulumi-lang-hcl=\"`uptime`\"\u003e`uptime`\u003c/span\u003e.\n"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Up to 20 lowercase tags.\n"
+                },
+                "threshold": {
+                    "type": "number",
+                    "description": "Breach threshold. Error rates are 0 to 1 ratios.\n"
+                },
+                "thresholdUpper": {
+                    "type": "number",
+                    "description": "Upper bound for \u003cspan pulumi-lang-nodejs=\"`between`\" pulumi-lang-dotnet=\"`Between`\" pulumi-lang-go=\"`between`\" pulumi-lang-python=\"`between`\" pulumi-lang-yaml=\"`between`\" pulumi-lang-java=\"`between`\" pulumi-lang-hcl=\"`between`\"\u003e`between`\u003c/span\u003e and \u003cspan pulumi-lang-nodejs=\"`notBetween`\" pulumi-lang-dotnet=\"`NotBetween`\" pulumi-lang-go=\"`notBetween`\" pulumi-lang-python=\"`not_between`\" pulumi-lang-yaml=\"`notBetween`\" pulumi-lang-java=\"`notBetween`\" pulumi-lang-hcl=\"`not_between`\"\u003e`notBetween`\u003c/span\u003e.\n"
+                },
+                "thresholds": {
+                    "type": "string",
+                    "description": "Tiered thresholds, one per severity, as an alternative to \u003cspan pulumi-lang-nodejs=\"`severity`\" pulumi-lang-dotnet=\"`Severity`\" pulumi-lang-go=\"`severity`\" pulumi-lang-python=\"`severity`\" pulumi-lang-yaml=\"`severity`\" pulumi-lang-java=\"`severity`\" pulumi-lang-hcl=\"`severity`\"\u003e`severity`\u003c/span\u003e + \u003cspan pulumi-lang-nodejs=\"`threshold`\" pulumi-lang-dotnet=\"`Threshold`\" pulumi-lang-go=\"`threshold`\" pulumi-lang-python=\"`threshold`\" pulumi-lang-yaml=\"`threshold`\" pulumi-lang-java=\"`threshold`\" pulumi-lang-hcl=\"`threshold`\"\u003e`threshold`\u003c/span\u003e: a list of `{ severity, value, upper, recovery_value,\u003cspan pulumi-lang-nodejs=\" destinationIds \" pulumi-lang-dotnet=\" DestinationIds \" pulumi-lang-go=\" destinationIds \" pulumi-lang-python=\" destination_ids \" pulumi-lang-yaml=\" destinationIds \" pulumi-lang-java=\" destinationIds \" pulumi-lang-hcl=\" destination_ids \"\u003e destinationIds \u003c/span\u003e}`. Read back from the API when unset. Write it with `jsonencode(...)`.\n"
+                },
+                "windowMinutes": {
+                    "type": "integer",
+                    "description": "Evaluation window, up to 1440.\n"
+                }
+            },
+            "requiredInputs": [
+                "comparator",
+                "name",
+                "signalType",
+                "windowMinutes"
+            ],
+            "stateInputs": {
+                "description": "Input properties used for looking up and filtering AlertRule resources.\n",
+                "properties": {
+                    "alertOnNoData": {
+                        "type": "boolean",
+                        "description": "Count a window with no data as a breach instead of skipping it.\n"
+                    },
+                    "apdexThresholdMs": {
+                        "type": "number",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`apdex`\" pulumi-lang-dotnet=\"`Apdex`\" pulumi-lang-go=\"`apdex`\" pulumi-lang-python=\"`apdex`\" pulumi-lang-yaml=\"`apdex`\" pulumi-lang-java=\"`apdex`\" pulumi-lang-hcl=\"`apdex`\"\u003e`apdex`\u003c/span\u003e: the satisfied-latency threshold T in milliseconds.\n"
+                    },
+                    "breachesOutOf": {
+                        "type": "integer",
+                        "description": "Fire on \u003cspan pulumi-lang-nodejs=\"`consecutiveBreachesRequired`\" pulumi-lang-dotnet=\"`ConsecutiveBreachesRequired`\" pulumi-lang-go=\"`consecutiveBreachesRequired`\" pulumi-lang-python=\"`consecutive_breaches_required`\" pulumi-lang-yaml=\"`consecutiveBreachesRequired`\" pulumi-lang-java=\"`consecutiveBreachesRequired`\" pulumi-lang-hcl=\"`consecutive_breaches_required`\"\u003e`consecutiveBreachesRequired`\u003c/span\u003e breaches out of this many evaluations instead of in a row (up to 30).\n"
+                    },
+                    "comparator": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`gt`\" pulumi-lang-dotnet=\"`Gt`\" pulumi-lang-go=\"`gt`\" pulumi-lang-python=\"`gt`\" pulumi-lang-yaml=\"`gt`\" pulumi-lang-java=\"`gt`\" pulumi-lang-hcl=\"`gt`\"\u003e`gt`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`gte`\" pulumi-lang-dotnet=\"`Gte`\" pulumi-lang-go=\"`gte`\" pulumi-lang-python=\"`gte`\" pulumi-lang-yaml=\"`gte`\" pulumi-lang-java=\"`gte`\" pulumi-lang-hcl=\"`gte`\"\u003e`gte`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`lt`\" pulumi-lang-dotnet=\"`Lt`\" pulumi-lang-go=\"`lt`\" pulumi-lang-python=\"`lt`\" pulumi-lang-yaml=\"`lt`\" pulumi-lang-java=\"`lt`\" pulumi-lang-hcl=\"`lt`\"\u003e`lt`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`lte`\" pulumi-lang-dotnet=\"`Lte`\" pulumi-lang-go=\"`lte`\" pulumi-lang-python=\"`lte`\" pulumi-lang-yaml=\"`lte`\" pulumi-lang-java=\"`lte`\" pulumi-lang-hcl=\"`lte`\"\u003e`lte`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`eq`\" pulumi-lang-dotnet=\"`Eq`\" pulumi-lang-go=\"`eq`\" pulumi-lang-python=\"`eq`\" pulumi-lang-yaml=\"`eq`\" pulumi-lang-java=\"`eq`\" pulumi-lang-hcl=\"`eq`\"\u003e`eq`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`neq`\" pulumi-lang-dotnet=\"`Neq`\" pulumi-lang-go=\"`neq`\" pulumi-lang-python=\"`neq`\" pulumi-lang-yaml=\"`neq`\" pulumi-lang-java=\"`neq`\" pulumi-lang-hcl=\"`neq`\"\u003e`neq`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`between`\" pulumi-lang-dotnet=\"`Between`\" pulumi-lang-go=\"`between`\" pulumi-lang-python=\"`between`\" pulumi-lang-yaml=\"`between`\" pulumi-lang-java=\"`between`\" pulumi-lang-hcl=\"`between`\"\u003e`between`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`notBetween`\" pulumi-lang-dotnet=\"`NotBetween`\" pulumi-lang-go=\"`notBetween`\" pulumi-lang-python=\"`not_between`\" pulumi-lang-yaml=\"`notBetween`\" pulumi-lang-java=\"`notBetween`\" pulumi-lang-hcl=\"`not_between`\"\u003e`notBetween`\u003c/span\u003e.\n"
+                    },
+                    "consecutiveBreachesRequired": {
+                        "type": "integer",
+                        "description": "Breaching evaluations in a row before the rule fires.\n"
+                    },
+                    "consecutiveHealthyRequired": {
+                        "type": "integer",
+                        "description": "Healthy evaluations in a row before an incident resolves.\n"
+                    },
+                    "destinationIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "`dest_…` IDs to notify, typically `maple_alert_destination.\u003cname\u003e.id`.\n"
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Whether the rule is evaluated. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                    },
+                    "environments": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Only evaluate these `deployment.environment` values.\n"
+                    },
+                    "evaluationIntervalMinutes": {
+                        "type": "integer",
+                        "description": "How often the rule runs: 1, 5, 10, 15, 30 or 60. Unset uses Maple's default schedule.\n"
+                    },
+                    "excludeServiceNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Skip these services.\n"
+                    },
+                    "groupBies": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Evaluate each group separately, e.g. `[\"service.name\"]`.\n"
+                    },
+                    "minimumSampleCount": {
+                        "type": "integer",
+                        "description": "Skip windows with fewer samples than this.\n"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Rule name, unique in the organization.\n"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "description": "Runbook notes included in notifications.\n"
+                    },
+                    "notificationTemplate": {
+                        "type": "string",
+                        "description": "Custom notification \u003cspan pulumi-lang-nodejs=\"`title`\" pulumi-lang-dotnet=\"`Title`\" pulumi-lang-go=\"`title`\" pulumi-lang-python=\"`title`\" pulumi-lang-yaml=\"`title`\" pulumi-lang-java=\"`title`\" pulumi-lang-hcl=\"`title`\"\u003e`title`\u003c/span\u003e and \u003cspan pulumi-lang-nodejs=\"`body`\" pulumi-lang-dotnet=\"`Body`\" pulumi-lang-go=\"`body`\" pulumi-lang-python=\"`body`\" pulumi-lang-yaml=\"`body`\" pulumi-lang-java=\"`body`\" pulumi-lang-hcl=\"`body`\"\u003e`body`\u003c/span\u003e, with optional per-channel \u003cspan pulumi-lang-nodejs=\"`overrides`\" pulumi-lang-dotnet=\"`Overrides`\" pulumi-lang-go=\"`overrides`\" pulumi-lang-python=\"`overrides`\" pulumi-lang-yaml=\"`overrides`\" pulumi-lang-java=\"`overrides`\" pulumi-lang-hcl=\"`overrides`\"\u003e`overrides`\u003c/span\u003e. Write it with `jsonencode(...)`.\n"
+                    },
+                    "queryBuilderDraft": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`builderQuery`\" pulumi-lang-dotnet=\"`BuilderQuery`\" pulumi-lang-go=\"`builderQuery`\" pulumi-lang-python=\"`builder_query`\" pulumi-lang-yaml=\"`builderQuery`\" pulumi-lang-java=\"`builderQuery`\" pulumi-lang-hcl=\"`builder_query`\"\u003e`builderQuery`\u003c/span\u003e: the query builder draft, as the dashboard's query builder saves it. Write it with `jsonencode(...)`.\n"
+                    },
+                    "rawQueryReducer": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`rawQuery`\" pulumi-lang-dotnet=\"`RawQuery`\" pulumi-lang-go=\"`rawQuery`\" pulumi-lang-python=\"`raw_query`\" pulumi-lang-yaml=\"`rawQuery`\" pulumi-lang-java=\"`rawQuery`\" pulumi-lang-hcl=\"`raw_query`\"\u003e`rawQuery`\u003c/span\u003e: how rows reduce to one value: \u003cspan pulumi-lang-nodejs=\"`identity`\" pulumi-lang-dotnet=\"`Identity`\" pulumi-lang-go=\"`identity`\" pulumi-lang-python=\"`identity`\" pulumi-lang-yaml=\"`identity`\" pulumi-lang-java=\"`identity`\" pulumi-lang-hcl=\"`identity`\"\u003e`identity`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`sum`\" pulumi-lang-dotnet=\"`Sum`\" pulumi-lang-go=\"`sum`\" pulumi-lang-python=\"`sum`\" pulumi-lang-yaml=\"`sum`\" pulumi-lang-java=\"`sum`\" pulumi-lang-hcl=\"`sum`\"\u003e`sum`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`avg`\" pulumi-lang-dotnet=\"`Avg`\" pulumi-lang-go=\"`avg`\" pulumi-lang-python=\"`avg`\" pulumi-lang-yaml=\"`avg`\" pulumi-lang-java=\"`avg`\" pulumi-lang-hcl=\"`avg`\"\u003e`avg`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`min`\" pulumi-lang-dotnet=\"`Min`\" pulumi-lang-go=\"`min`\" pulumi-lang-python=\"`min`\" pulumi-lang-yaml=\"`min`\" pulumi-lang-java=\"`min`\" pulumi-lang-hcl=\"`min`\"\u003e`min`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`max`\" pulumi-lang-dotnet=\"`Max`\" pulumi-lang-go=\"`max`\" pulumi-lang-python=\"`max`\" pulumi-lang-yaml=\"`max`\" pulumi-lang-java=\"`max`\" pulumi-lang-hcl=\"`max`\"\u003e`max`\u003c/span\u003e.\n"
+                    },
+                    "rawQuerySql": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`rawQuery`\" pulumi-lang-dotnet=\"`RawQuery`\" pulumi-lang-go=\"`rawQuery`\" pulumi-lang-python=\"`raw_query`\" pulumi-lang-yaml=\"`rawQuery`\" pulumi-lang-java=\"`rawQuery`\" pulumi-lang-hcl=\"`raw_query`\"\u003e`rawQuery`\u003c/span\u003e: the SQL to evaluate.\n"
+                    },
+                    "renotifyIntervalMinutes": {
+                        "type": "integer",
+                        "description": "Re-send notifications for an open incident this often.\n"
+                    },
+                    "serviceNames": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Only evaluate these services.\n"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`warning`\" pulumi-lang-dotnet=\"`Warning`\" pulumi-lang-go=\"`warning`\" pulumi-lang-python=\"`warning`\" pulumi-lang-yaml=\"`warning`\" pulumi-lang-java=\"`warning`\" pulumi-lang-hcl=\"`warning`\"\u003e`warning`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`critical`\" pulumi-lang-dotnet=\"`Critical`\" pulumi-lang-go=\"`critical`\" pulumi-lang-python=\"`critical`\" pulumi-lang-yaml=\"`critical`\" pulumi-lang-java=\"`critical`\" pulumi-lang-hcl=\"`critical`\"\u003e`critical`\u003c/span\u003e. Derived from \u003cspan pulumi-lang-nodejs=\"`thresholds`\" pulumi-lang-dotnet=\"`Thresholds`\" pulumi-lang-go=\"`thresholds`\" pulumi-lang-python=\"`thresholds`\" pulumi-lang-yaml=\"`thresholds`\" pulumi-lang-java=\"`thresholds`\" pulumi-lang-hcl=\"`thresholds`\"\u003e`thresholds`\u003c/span\u003e when those are set.\n"
+                    },
+                    "signalType": {
+                        "type": "string",
+                        "description": "What the rule measures: \u003cspan pulumi-lang-nodejs=\"`errorRate`\" pulumi-lang-dotnet=\"`ErrorRate`\" pulumi-lang-go=\"`errorRate`\" pulumi-lang-python=\"`error_rate`\" pulumi-lang-yaml=\"`errorRate`\" pulumi-lang-java=\"`errorRate`\" pulumi-lang-hcl=\"`error_rate`\"\u003e`errorRate`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`p95Latency`\" pulumi-lang-dotnet=\"`P95Latency`\" pulumi-lang-go=\"`p95Latency`\" pulumi-lang-python=\"`p95_latency`\" pulumi-lang-yaml=\"`p95Latency`\" pulumi-lang-java=\"`p95Latency`\" pulumi-lang-hcl=\"`p95_latency`\"\u003e`p95Latency`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`p99Latency`\" pulumi-lang-dotnet=\"`P99Latency`\" pulumi-lang-go=\"`p99Latency`\" pulumi-lang-python=\"`p99_latency`\" pulumi-lang-yaml=\"`p99Latency`\" pulumi-lang-java=\"`p99Latency`\" pulumi-lang-hcl=\"`p99_latency`\"\u003e`p99Latency`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`apdex`\" pulumi-lang-dotnet=\"`Apdex`\" pulumi-lang-go=\"`apdex`\" pulumi-lang-python=\"`apdex`\" pulumi-lang-yaml=\"`apdex`\" pulumi-lang-java=\"`apdex`\" pulumi-lang-hcl=\"`apdex`\"\u003e`apdex`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`throughput`\" pulumi-lang-dotnet=\"`Throughput`\" pulumi-lang-go=\"`throughput`\" pulumi-lang-python=\"`throughput`\" pulumi-lang-yaml=\"`throughput`\" pulumi-lang-java=\"`throughput`\" pulumi-lang-hcl=\"`throughput`\"\u003e`throughput`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`builderQuery`\" pulumi-lang-dotnet=\"`BuilderQuery`\" pulumi-lang-go=\"`builderQuery`\" pulumi-lang-python=\"`builder_query`\" pulumi-lang-yaml=\"`builderQuery`\" pulumi-lang-java=\"`builderQuery`\" pulumi-lang-hcl=\"`builder_query`\"\u003e`builderQuery`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`rawQuery`\" pulumi-lang-dotnet=\"`RawQuery`\" pulumi-lang-go=\"`rawQuery`\" pulumi-lang-python=\"`raw_query`\" pulumi-lang-yaml=\"`rawQuery`\" pulumi-lang-java=\"`rawQuery`\" pulumi-lang-hcl=\"`raw_query`\"\u003e`rawQuery`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`uptime`\" pulumi-lang-dotnet=\"`Uptime`\" pulumi-lang-go=\"`uptime`\" pulumi-lang-python=\"`uptime`\" pulumi-lang-yaml=\"`uptime`\" pulumi-lang-java=\"`uptime`\" pulumi-lang-hcl=\"`uptime`\"\u003e`uptime`\u003c/span\u003e.\n"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Up to 20 lowercase tags.\n"
+                    },
+                    "threshold": {
+                        "type": "number",
+                        "description": "Breach threshold. Error rates are 0 to 1 ratios.\n"
+                    },
+                    "thresholdUpper": {
+                        "type": "number",
+                        "description": "Upper bound for \u003cspan pulumi-lang-nodejs=\"`between`\" pulumi-lang-dotnet=\"`Between`\" pulumi-lang-go=\"`between`\" pulumi-lang-python=\"`between`\" pulumi-lang-yaml=\"`between`\" pulumi-lang-java=\"`between`\" pulumi-lang-hcl=\"`between`\"\u003e`between`\u003c/span\u003e and \u003cspan pulumi-lang-nodejs=\"`notBetween`\" pulumi-lang-dotnet=\"`NotBetween`\" pulumi-lang-go=\"`notBetween`\" pulumi-lang-python=\"`not_between`\" pulumi-lang-yaml=\"`notBetween`\" pulumi-lang-java=\"`notBetween`\" pulumi-lang-hcl=\"`not_between`\"\u003e`notBetween`\u003c/span\u003e.\n"
+                    },
+                    "thresholds": {
+                        "type": "string",
+                        "description": "Tiered thresholds, one per severity, as an alternative to \u003cspan pulumi-lang-nodejs=\"`severity`\" pulumi-lang-dotnet=\"`Severity`\" pulumi-lang-go=\"`severity`\" pulumi-lang-python=\"`severity`\" pulumi-lang-yaml=\"`severity`\" pulumi-lang-java=\"`severity`\" pulumi-lang-hcl=\"`severity`\"\u003e`severity`\u003c/span\u003e + \u003cspan pulumi-lang-nodejs=\"`threshold`\" pulumi-lang-dotnet=\"`Threshold`\" pulumi-lang-go=\"`threshold`\" pulumi-lang-python=\"`threshold`\" pulumi-lang-yaml=\"`threshold`\" pulumi-lang-java=\"`threshold`\" pulumi-lang-hcl=\"`threshold`\"\u003e`threshold`\u003c/span\u003e: a list of `{ severity, value, upper, recovery_value,\u003cspan pulumi-lang-nodejs=\" destinationIds \" pulumi-lang-dotnet=\" DestinationIds \" pulumi-lang-go=\" destinationIds \" pulumi-lang-python=\" destination_ids \" pulumi-lang-yaml=\" destinationIds \" pulumi-lang-java=\" destinationIds \" pulumi-lang-hcl=\" destination_ids \"\u003e destinationIds \u003c/span\u003e}`. Read back from the API when unset. Write it with `jsonencode(...)`.\n"
+                    },
+                    "windowMinutes": {
+                        "type": "integer",
+                        "description": "Evaluation window, up to 1440.\n"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "maple:index/apiKey:ApiKey": {
+            "description": "A Maple API key. The secret is only returned when the key is created or rolled, and is stored in state: treat the state as sensitive. Destroying the resource revokes the key.\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as maple from \"@maple-dev/pulumi\";\nimport * as time from \"@pulumi/time\";\n\nconst quarterly = new time.index.Rotating(\"quarterly\", {rotationDays: 90});\nconst grafana = new maple.ApiKey(\"grafana\", {\n    name: \"grafana-readonly\",\n    scopes: [\n        \"dashboards:read\",\n        \"traces:read\",\n        \"metrics:read\",\n    ],\n    rotate: quarterly.id,\n});\nexport const grafanaKey = grafana.secret;\n```\n```python\nimport pulumi\nimport pulumi_maple as maple\nimport pulumi_time as time\n\nquarterly = time.Rotating(\"quarterly\", rotation_days=90)\ngrafana = maple.ApiKey(\"grafana\",\n    name=\"grafana-readonly\",\n    scopes=[\n        \"dashboards:read\",\n        \"traces:read\",\n        \"metrics:read\",\n    ],\n    rotate=quarterly[\"id\"])\npulumi.export(\"grafanaKey\", grafana.secret)\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing Pulumi;\nusing Maple = Pulumi.Maple;\nusing Time = Pulumi.Time;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var quarterly = new Time.Rotating(\"quarterly\", new()\n    {\n        RotationDays = 90,\n    });\n\n    var grafana = new Maple.ApiKey(\"grafana\", new()\n    {\n        Name = \"grafana-readonly\",\n        Scopes = new[]\n        {\n            \"dashboards:read\",\n            \"traces:read\",\n            \"metrics:read\",\n        },\n        Rotate = quarterly.Id,\n    });\n\n    return new Dictionary\u003cstring, object?\u003e\n    {\n        [\"grafanaKey\"] = grafana.Secret,\n    };\n});\n```\n```go\npackage main\n\nimport (\n\t\"github.com/MapleTechLabs/pulumi-maple/sdk/go/maple\"\n\t\"github.com/pulumi/pulumi-time/sdk/go/time\"\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\tquarterly, err := time.NewRotating(ctx, \"quarterly\", \u0026time.RotatingArgs{\n\t\t\tRotationDays: 90,\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\tgrafana, err := maple.NewApiKey(ctx, \"grafana\", \u0026maple.ApiKeyArgs{\n\t\t\tName: pulumi.String(\"grafana-readonly\"),\n\t\t\tScopes: pulumi.StringArray{\n\t\t\t\tpulumi.String(\"dashboards:read\"),\n\t\t\t\tpulumi.String(\"traces:read\"),\n\t\t\t\tpulumi.String(\"metrics:read\"),\n\t\t\t},\n\t\t\tRotate: quarterly.Id,\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\tctx.Export(\"grafanaKey\", grafana.Secret)\n\t\treturn nil\n\t})\n}\n```\n```hcl\nterraform {\n  required_providers {\n    maple = {\n      source = \"pulumi/maple\"\n    }\n  }\n}\n\nresource \"time_rotating\" \"quarterly\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  rotation_days = 90\n}\nresource \"maple_api_key\" \"grafana\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  name   = \"grafana-readonly\"\n  scopes = [\"dashboards:read\", \"traces:read\", \"metrics:read\"]\n  rotate = time_rotating.quarterly.id\n}\noutput \"grafanaKey\" {\n  value = maple_api_key.grafana.secret\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.time.Rotating;\nimport com.pulumi.time.RotatingArgs;\nimport com.pulumi.maple.ApiKey;\nimport com.pulumi.maple.ApiKeyArgs;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        var quarterly = new Rotating(\"quarterly\", RotatingArgs.builder()\n            .rotationDays(90)\n            .build());\n\n        var grafana = new ApiKey(\"grafana\", ApiKeyArgs.builder()\n            .name(\"grafana-readonly\")\n            .scopes(            \n                \"dashboards:read\",\n                \"traces:read\",\n                \"metrics:read\")\n            .rotate(quarterly.get(\"id\"))\n            .build());\n\n        ctx.export(\"grafanaKey\", grafana.secret());\n    }\n}\n```\n```yaml\nresources:\n  quarterly:\n    type: time:Rotating\n    properties:\n      rotationDays: 90\n  grafana:\n    type: maple:ApiKey\n    properties:\n      name: grafana-readonly\n      scopes:\n        - dashboards:read\n        - traces:read\n        - metrics:read\n      rotate: ${quarterly.id}\noutputs:\n  grafanaKey: ${grafana.secret}\n```\n\u003c!--End PulumiCodeChooser --\u003e\n\n## Import\n\nThe `pulumi import` command can be used, for example:\n\n```sh\n$ pulumi import maple:index/apiKey:ApiKey example \u003cid\u003e\n```\n\n",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "Changing it replaces the key.\n"
+                },
+                "expiresAt": {
+                    "type": "string",
+                    "description": "When the key expires, if it does.\n"
+                },
+                "expiresInSeconds": {
+                    "type": "integer",
+                    "description": "Lifetime from creation. Unset means the key does not expire. Changing it replaces the key.\n"
+                },
+                "keyPrefix": {
+                    "type": "string",
+                    "description": "The visible start of the secret, as shown in Maple.\n"
+                },
+                "kind": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`standard`\" pulumi-lang-dotnet=\"`Standard`\" pulumi-lang-go=\"`standard`\" pulumi-lang-python=\"`standard`\" pulumi-lang-yaml=\"`standard`\" pulumi-lang-java=\"`standard`\" pulumi-lang-hcl=\"`standard`\"\u003e`standard`\u003c/span\u003e (default) or \u003cspan pulumi-lang-nodejs=\"`mcp`\" pulumi-lang-dotnet=\"`Mcp`\" pulumi-lang-go=\"`mcp`\" pulumi-lang-python=\"`mcp`\" pulumi-lang-yaml=\"`mcp`\" pulumi-lang-java=\"`mcp`\" pulumi-lang-hcl=\"`mcp`\"\u003e`mcp`\u003c/span\u003e. Changing it replaces the key.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Key name. Changing it replaces the key.\n"
+                },
+                "rotate": {
+                    "type": "string",
+                    "description": "Any value; changing it rolls the key: Maple revokes it and issues a replacement with the same name, description, kind and scopes, a new ID and a new secret. For example the \u003cspan pulumi-lang-nodejs=\"`id`\" pulumi-lang-dotnet=\"`Id`\" pulumi-lang-go=\"`id`\" pulumi-lang-python=\"`id`\" pulumi-lang-yaml=\"`id`\" pulumi-lang-java=\"`id`\" pulumi-lang-hcl=\"`id`\"\u003e`id`\u003c/span\u003e of a \u003cspan pulumi-lang-nodejs=\"`timeRotating`\" pulumi-lang-dotnet=\"`TimeRotating`\" pulumi-lang-go=\"`timeRotating`\" pulumi-lang-python=\"`time_rotating`\" pulumi-lang-yaml=\"`timeRotating`\" pulumi-lang-java=\"`timeRotating`\" pulumi-lang-hcl=\"`time_rotating`\"\u003e`timeRotating`\u003c/span\u003e resource.\n"
+                },
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Scopes like `dashboards:read` or `alerts:write`. Unset means full access. Changing them replaces the key.\n"
+                },
+                "secret": {
+                    "type": "string",
+                    "description": "The `maple_ak_…` secret.\n",
+                    "secret": true
+                }
+            },
+            "required": [
+                "expiresAt",
+                "keyPrefix",
+                "kind",
+                "name",
+                "secret"
+            ],
+            "inputProperties": {
+                "description": {
+                    "type": "string",
+                    "description": "Changing it replaces the key.\n"
+                },
+                "expiresInSeconds": {
+                    "type": "integer",
+                    "description": "Lifetime from creation. Unset means the key does not expire. Changing it replaces the key.\n"
+                },
+                "kind": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`standard`\" pulumi-lang-dotnet=\"`Standard`\" pulumi-lang-go=\"`standard`\" pulumi-lang-python=\"`standard`\" pulumi-lang-yaml=\"`standard`\" pulumi-lang-java=\"`standard`\" pulumi-lang-hcl=\"`standard`\"\u003e`standard`\u003c/span\u003e (default) or \u003cspan pulumi-lang-nodejs=\"`mcp`\" pulumi-lang-dotnet=\"`Mcp`\" pulumi-lang-go=\"`mcp`\" pulumi-lang-python=\"`mcp`\" pulumi-lang-yaml=\"`mcp`\" pulumi-lang-java=\"`mcp`\" pulumi-lang-hcl=\"`mcp`\"\u003e`mcp`\u003c/span\u003e. Changing it replaces the key.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Key name. Changing it replaces the key.\n"
+                },
+                "rotate": {
+                    "type": "string",
+                    "description": "Any value; changing it rolls the key: Maple revokes it and issues a replacement with the same name, description, kind and scopes, a new ID and a new secret. For example the \u003cspan pulumi-lang-nodejs=\"`id`\" pulumi-lang-dotnet=\"`Id`\" pulumi-lang-go=\"`id`\" pulumi-lang-python=\"`id`\" pulumi-lang-yaml=\"`id`\" pulumi-lang-java=\"`id`\" pulumi-lang-hcl=\"`id`\"\u003e`id`\u003c/span\u003e of a \u003cspan pulumi-lang-nodejs=\"`timeRotating`\" pulumi-lang-dotnet=\"`TimeRotating`\" pulumi-lang-go=\"`timeRotating`\" pulumi-lang-python=\"`time_rotating`\" pulumi-lang-yaml=\"`timeRotating`\" pulumi-lang-java=\"`timeRotating`\" pulumi-lang-hcl=\"`time_rotating`\"\u003e`timeRotating`\u003c/span\u003e resource.\n"
+                },
+                "scopes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Scopes like `dashboards:read` or `alerts:write`. Unset means full access. Changing them replaces the key.\n"
+                }
+            },
+            "requiredInputs": [
+                "name"
+            ],
+            "stateInputs": {
+                "description": "Input properties used for looking up and filtering ApiKey resources.\n",
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "description": "Changing it replaces the key.\n"
+                    },
+                    "expiresAt": {
+                        "type": "string",
+                        "description": "When the key expires, if it does.\n"
+                    },
+                    "expiresInSeconds": {
+                        "type": "integer",
+                        "description": "Lifetime from creation. Unset means the key does not expire. Changing it replaces the key.\n"
+                    },
+                    "keyPrefix": {
+                        "type": "string",
+                        "description": "The visible start of the secret, as shown in Maple.\n"
+                    },
+                    "kind": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`standard`\" pulumi-lang-dotnet=\"`Standard`\" pulumi-lang-go=\"`standard`\" pulumi-lang-python=\"`standard`\" pulumi-lang-yaml=\"`standard`\" pulumi-lang-java=\"`standard`\" pulumi-lang-hcl=\"`standard`\"\u003e`standard`\u003c/span\u003e (default) or \u003cspan pulumi-lang-nodejs=\"`mcp`\" pulumi-lang-dotnet=\"`Mcp`\" pulumi-lang-go=\"`mcp`\" pulumi-lang-python=\"`mcp`\" pulumi-lang-yaml=\"`mcp`\" pulumi-lang-java=\"`mcp`\" pulumi-lang-hcl=\"`mcp`\"\u003e`mcp`\u003c/span\u003e. Changing it replaces the key.\n"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Key name. Changing it replaces the key.\n"
+                    },
+                    "rotate": {
+                        "type": "string",
+                        "description": "Any value; changing it rolls the key: Maple revokes it and issues a replacement with the same name, description, kind and scopes, a new ID and a new secret. For example the \u003cspan pulumi-lang-nodejs=\"`id`\" pulumi-lang-dotnet=\"`Id`\" pulumi-lang-go=\"`id`\" pulumi-lang-python=\"`id`\" pulumi-lang-yaml=\"`id`\" pulumi-lang-java=\"`id`\" pulumi-lang-hcl=\"`id`\"\u003e`id`\u003c/span\u003e of a \u003cspan pulumi-lang-nodejs=\"`timeRotating`\" pulumi-lang-dotnet=\"`TimeRotating`\" pulumi-lang-go=\"`timeRotating`\" pulumi-lang-python=\"`time_rotating`\" pulumi-lang-yaml=\"`timeRotating`\" pulumi-lang-java=\"`timeRotating`\" pulumi-lang-hcl=\"`time_rotating`\"\u003e`timeRotating`\u003c/span\u003e resource.\n"
+                    },
+                    "scopes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Scopes like `dashboards:read` or `alerts:write`. Unset means full access. Changing them replaces the key.\n"
+                    },
+                    "secret": {
+                        "type": "string",
+                        "description": "The `maple_ak_…` secret.\n",
+                        "secret": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "maple:index/dashboard:Dashboard": {
+            "description": "A Maple dashboard. Widget, section and variable documents use the v2 wire shape: build the dashboard in the UI and copy them from `GET /v2/dashboards/{id}`, or import it.\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as maple from \"@maple-dev/pulumi\";\n\nconst checkout = new maple.Dashboard(\"checkout\", {\n    name: \"Checkout\",\n    description: \"Golden signals for the checkout flow\",\n    tags: [\"checkout\"],\n    timeRange: JSON.stringify({\n        type: \"relative\",\n        value: \"12h\",\n    }),\n    widgets: JSON.stringify([{\n        id: \"error-rate\",\n        visualization: \"chart\",\n        data_source: {\n            kind: \"route\",\n            endpoint: \"traces_timeseries\",\n        },\n        display: {\n            title: \"Error rate\",\n        },\n        layout: {\n            x: 0,\n            y: 0,\n            w: 6,\n            h: 4,\n        },\n    }]),\n});\n```\n```python\nimport pulumi\nimport json\nimport pulumi_maple as maple\n\ncheckout = maple.Dashboard(\"checkout\",\n    name=\"Checkout\",\n    description=\"Golden signals for the checkout flow\",\n    tags=[\"checkout\"],\n    time_range=json.dumps({\n        \"type\": \"relative\",\n        \"value\": \"12h\",\n    }),\n    widgets=json.dumps([{\n        \"id\": \"error-rate\",\n        \"visualization\": \"chart\",\n        \"data_source\": {\n            \"kind\": \"route\",\n            \"endpoint\": \"traces_timeseries\",\n        },\n        \"display\": {\n            \"title\": \"Error rate\",\n        },\n        \"layout\": {\n            \"x\": 0,\n            \"y\": 0,\n            \"w\": 6,\n            \"h\": 4,\n        },\n    }]))\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing System.Text.Json;\nusing Pulumi;\nusing Maple = Pulumi.Maple;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var checkout = new Maple.Dashboard(\"checkout\", new()\n    {\n        Name = \"Checkout\",\n        Description = \"Golden signals for the checkout flow\",\n        Tags = new[]\n        {\n            \"checkout\",\n        },\n        TimeRange = JsonSerializer.Serialize(new Dictionary\u003cstring, object?\u003e\n        {\n            [\"type\"] = \"relative\",\n            [\"value\"] = \"12h\",\n        }),\n        Widgets = JsonSerializer.Serialize(new[]\n        {\n            new Dictionary\u003cstring, object?\u003e\n            {\n                [\"id\"] = \"error-rate\",\n                [\"visualization\"] = \"chart\",\n                [\"data_source\"] = new Dictionary\u003cstring, object?\u003e\n                {\n                    [\"kind\"] = \"route\",\n                    [\"endpoint\"] = \"traces_timeseries\",\n                },\n                [\"display\"] = new Dictionary\u003cstring, object?\u003e\n                {\n                    [\"title\"] = \"Error rate\",\n                },\n                [\"layout\"] = new Dictionary\u003cstring, object?\u003e\n                {\n                    [\"x\"] = 0,\n                    [\"y\"] = 0,\n                    [\"w\"] = 6,\n                    [\"h\"] = 4,\n                },\n            },\n        }),\n    });\n\n});\n```\n```go\npackage main\n\nimport (\n\t\"encoding/json\"\n\n\t\"github.com/MapleTechLabs/pulumi-maple/sdk/go/maple\"\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\ttmpJSON0, err := json.Marshal(map[string]string{\n\t\t\t\"type\":  \"relative\",\n\t\t\t\"value\": \"12h\",\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\tjson0 := string(tmpJSON0)\n\t\ttmpJSON1, err := json.Marshal([]map[string]interface{}{\n\t\t\tmap[string]interface{}{\n\t\t\t\t\"id\":            \"error-rate\",\n\t\t\t\t\"visualization\": \"chart\",\n\t\t\t\t\"data_source\": map[string]string{\n\t\t\t\t\t\"kind\":     \"route\",\n\t\t\t\t\t\"endpoint\": \"traces_timeseries\",\n\t\t\t\t},\n\t\t\t\t\"display\": map[string]string{\n\t\t\t\t\t\"title\": \"Error rate\",\n\t\t\t\t},\n\t\t\t\t\"layout\": map[string]int{\n\t\t\t\t\t\"x\": 0,\n\t\t\t\t\t\"y\": 0,\n\t\t\t\t\t\"w\": 6,\n\t\t\t\t\t\"h\": 4,\n\t\t\t\t},\n\t\t\t},\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\tjson1 := string(tmpJSON1)\n\t\t_, err = maple.NewDashboard(ctx, \"checkout\", \u0026maple.DashboardArgs{\n\t\t\tName:        pulumi.String(\"Checkout\"),\n\t\t\tDescription: pulumi.String(\"Golden signals for the checkout flow\"),\n\t\t\tTags: pulumi.StringArray{\n\t\t\t\tpulumi.String(\"checkout\"),\n\t\t\t},\n\t\t\tTimeRange: pulumi.String(json0),\n\t\t\tWidgets:   pulumi.String(json1),\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\treturn nil\n\t})\n}\n```\n```hcl\nterraform {\n  required_providers {\n    maple = {\n      source = \"pulumi/maple\"\n    }\n  }\n}\n\nresource \"maple_dashboard\" \"checkout\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  name        = \"Checkout\"\n  description = \"Golden signals for the checkout flow\"\n  tags        = [\"checkout\"]\n  time_range = jsonencode({\n    \"type\"  = \"relative\"\n    \"value\" = \"12h\"\n  })\n  widgets = jsonencode([{\n    \"id\"            = \"error-rate\"\n    \"visualization\" = \"chart\"\n    \"data_source\" = {\n      \"kind\"     = \"route\"\n      \"endpoint\" = \"traces_timeseries\"\n    }\n    \"display\" = {\n      \"title\" = \"Error rate\"\n    }\n    \"layout\" = {\n      \"x\" = 0\n      \"y\" = 0\n      \"w\" = 6\n      \"h\" = 4\n    }\n  }])\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.maple.Dashboard;\nimport com.pulumi.maple.DashboardArgs;\nimport static com.pulumi.codegen.internal.Serialization.*;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        var checkout = new Dashboard(\"checkout\", DashboardArgs.builder()\n            .name(\"Checkout\")\n            .description(\"Golden signals for the checkout flow\")\n            .tags(\"checkout\")\n            .timeRange(serializeJson(\n                jsonObject(\n                    jsonProperty(\"type\", \"relative\"),\n                    jsonProperty(\"value\", \"12h\")\n                )))\n            .widgets(serializeJson(\n                jsonArray(jsonObject(\n                    jsonProperty(\"id\", \"error-rate\"),\n                    jsonProperty(\"visualization\", \"chart\"),\n                    jsonProperty(\"data_source\", jsonObject(\n                        jsonProperty(\"kind\", \"route\"),\n                        jsonProperty(\"endpoint\", \"traces_timeseries\")\n                    )),\n                    jsonProperty(\"display\", jsonObject(\n                        jsonProperty(\"title\", \"Error rate\")\n                    )),\n                    jsonProperty(\"layout\", jsonObject(\n                        jsonProperty(\"x\", 0),\n                        jsonProperty(\"y\", 0),\n                        jsonProperty(\"w\", 6),\n                        jsonProperty(\"h\", 4)\n                    ))\n                ))))\n            .build());\n\n    }\n}\n```\n```yaml\nresources:\n  checkout:\n    type: maple:Dashboard\n    properties:\n      name: Checkout\n      description: Golden signals for the checkout flow\n      tags:\n        - checkout\n      timeRange:\n        fn::toJSON:\n          type: relative\n          value: 12h\n      widgets:\n        fn::toJSON:\n          - id: error-rate\n            visualization: chart\n            data_source:\n              kind: route\n              endpoint: traces_timeseries\n            display:\n              title: Error rate\n            layout:\n              x: 0\n              y: 0\n              w: 6\n              h: 4\n```\n\u003c!--End PulumiCodeChooser --\u003e\n\n## Import\n\nThe `pulumi import` command can be used, for example:\n\n```sh\n$ pulumi import maple:index/dashboard:Dashboard example \u003cid\u003e\n```\n\n",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "Shown under the dashboard name.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Dashboard name.\n"
+                },
+                "refreshIntervalSeconds": {
+                    "type": "integer",
+                    "description": "Auto-refresh interval: one of 0, 5, 10, 30, 60, 300 or 900. Unset means no auto-refresh.\n"
+                },
+                "sections": {
+                    "type": "string",
+                    "description": "List of collapsible widget groups. Widgets join one with \u003cspan pulumi-lang-nodejs=\"`sectionId`\" pulumi-lang-dotnet=\"`SectionId`\" pulumi-lang-go=\"`sectionId`\" pulumi-lang-python=\"`section_id`\" pulumi-lang-yaml=\"`sectionId`\" pulumi-lang-java=\"`sectionId`\" pulumi-lang-hcl=\"`section_id`\"\u003e`sectionId`\u003c/span\u003e and \u003cspan pulumi-lang-nodejs=\"`tabId`\" pulumi-lang-dotnet=\"`TabId`\" pulumi-lang-go=\"`tabId`\" pulumi-lang-python=\"`tab_id`\" pulumi-lang-yaml=\"`tabId`\" pulumi-lang-java=\"`tabId`\" pulumi-lang-hcl=\"`tab_id`\"\u003e`tabId`\u003c/span\u003e; their \u003cspan pulumi-lang-nodejs=\"`layout`\" pulumi-lang-dotnet=\"`Layout`\" pulumi-lang-go=\"`layout`\" pulumi-lang-python=\"`layout`\" pulumi-lang-yaml=\"`layout`\" pulumi-lang-java=\"`layout`\" pulumi-lang-hcl=\"`layout`\"\u003e`layout`\u003c/span\u003e is relative to the section's grid. Write it with `jsonencode(...)`.\n"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Tags for filtering the dashboard list.\n"
+                },
+                "timeRange": {
+                    "type": "string",
+                    "description": "Default time range, e.g. `{ type = \"relative\", value = \"12h\" }` or `{ type = \"absolute\",\u003cspan pulumi-lang-nodejs=\" startTime \" pulumi-lang-dotnet=\" StartTime \" pulumi-lang-go=\" startTime \" pulumi-lang-python=\" start_time \" pulumi-lang-yaml=\" startTime \" pulumi-lang-java=\" startTime \" pulumi-lang-hcl=\" start_time \"\u003e startTime \u003c/span\u003e= \"…\",\u003cspan pulumi-lang-nodejs=\" endTime \" pulumi-lang-dotnet=\" EndTime \" pulumi-lang-go=\" endTime \" pulumi-lang-python=\" end_time \" pulumi-lang-yaml=\" endTime \" pulumi-lang-java=\" endTime \" pulumi-lang-hcl=\" end_time \"\u003e endTime \u003c/span\u003e= \"…\" }`. Defaults to the API's default when unset. Write it with `jsonencode(...)`.\n"
+                },
+                "variables": {
+                    "type": "string",
+                    "description": "List of dashboard variables. Write it with `jsonencode(...)`.\n"
+                },
+                "widgets": {
+                    "type": "string",
+                    "description": "List of widget documents. Write it with `jsonencode(...)`.\n"
+                }
+            },
+            "required": [
+                "name",
+                "timeRange"
+            ],
+            "inputProperties": {
+                "description": {
+                    "type": "string",
+                    "description": "Shown under the dashboard name.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Dashboard name.\n"
+                },
+                "refreshIntervalSeconds": {
+                    "type": "integer",
+                    "description": "Auto-refresh interval: one of 0, 5, 10, 30, 60, 300 or 900. Unset means no auto-refresh.\n"
+                },
+                "sections": {
+                    "type": "string",
+                    "description": "List of collapsible widget groups. Widgets join one with \u003cspan pulumi-lang-nodejs=\"`sectionId`\" pulumi-lang-dotnet=\"`SectionId`\" pulumi-lang-go=\"`sectionId`\" pulumi-lang-python=\"`section_id`\" pulumi-lang-yaml=\"`sectionId`\" pulumi-lang-java=\"`sectionId`\" pulumi-lang-hcl=\"`section_id`\"\u003e`sectionId`\u003c/span\u003e and \u003cspan pulumi-lang-nodejs=\"`tabId`\" pulumi-lang-dotnet=\"`TabId`\" pulumi-lang-go=\"`tabId`\" pulumi-lang-python=\"`tab_id`\" pulumi-lang-yaml=\"`tabId`\" pulumi-lang-java=\"`tabId`\" pulumi-lang-hcl=\"`tab_id`\"\u003e`tabId`\u003c/span\u003e; their \u003cspan pulumi-lang-nodejs=\"`layout`\" pulumi-lang-dotnet=\"`Layout`\" pulumi-lang-go=\"`layout`\" pulumi-lang-python=\"`layout`\" pulumi-lang-yaml=\"`layout`\" pulumi-lang-java=\"`layout`\" pulumi-lang-hcl=\"`layout`\"\u003e`layout`\u003c/span\u003e is relative to the section's grid. Write it with `jsonencode(...)`.\n"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Tags for filtering the dashboard list.\n"
+                },
+                "timeRange": {
+                    "type": "string",
+                    "description": "Default time range, e.g. `{ type = \"relative\", value = \"12h\" }` or `{ type = \"absolute\",\u003cspan pulumi-lang-nodejs=\" startTime \" pulumi-lang-dotnet=\" StartTime \" pulumi-lang-go=\" startTime \" pulumi-lang-python=\" start_time \" pulumi-lang-yaml=\" startTime \" pulumi-lang-java=\" startTime \" pulumi-lang-hcl=\" start_time \"\u003e startTime \u003c/span\u003e= \"…\",\u003cspan pulumi-lang-nodejs=\" endTime \" pulumi-lang-dotnet=\" EndTime \" pulumi-lang-go=\" endTime \" pulumi-lang-python=\" end_time \" pulumi-lang-yaml=\" endTime \" pulumi-lang-java=\" endTime \" pulumi-lang-hcl=\" end_time \"\u003e endTime \u003c/span\u003e= \"…\" }`. Defaults to the API's default when unset. Write it with `jsonencode(...)`.\n"
+                },
+                "variables": {
+                    "type": "string",
+                    "description": "List of dashboard variables. Write it with `jsonencode(...)`.\n"
+                },
+                "widgets": {
+                    "type": "string",
+                    "description": "List of widget documents. Write it with `jsonencode(...)`.\n"
+                }
+            },
+            "requiredInputs": [
+                "name"
+            ],
+            "stateInputs": {
+                "description": "Input properties used for looking up and filtering Dashboard resources.\n",
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "description": "Shown under the dashboard name.\n"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Dashboard name.\n"
+                    },
+                    "refreshIntervalSeconds": {
+                        "type": "integer",
+                        "description": "Auto-refresh interval: one of 0, 5, 10, 30, 60, 300 or 900. Unset means no auto-refresh.\n"
+                    },
+                    "sections": {
+                        "type": "string",
+                        "description": "List of collapsible widget groups. Widgets join one with \u003cspan pulumi-lang-nodejs=\"`sectionId`\" pulumi-lang-dotnet=\"`SectionId`\" pulumi-lang-go=\"`sectionId`\" pulumi-lang-python=\"`section_id`\" pulumi-lang-yaml=\"`sectionId`\" pulumi-lang-java=\"`sectionId`\" pulumi-lang-hcl=\"`section_id`\"\u003e`sectionId`\u003c/span\u003e and \u003cspan pulumi-lang-nodejs=\"`tabId`\" pulumi-lang-dotnet=\"`TabId`\" pulumi-lang-go=\"`tabId`\" pulumi-lang-python=\"`tab_id`\" pulumi-lang-yaml=\"`tabId`\" pulumi-lang-java=\"`tabId`\" pulumi-lang-hcl=\"`tab_id`\"\u003e`tabId`\u003c/span\u003e; their \u003cspan pulumi-lang-nodejs=\"`layout`\" pulumi-lang-dotnet=\"`Layout`\" pulumi-lang-go=\"`layout`\" pulumi-lang-python=\"`layout`\" pulumi-lang-yaml=\"`layout`\" pulumi-lang-java=\"`layout`\" pulumi-lang-hcl=\"`layout`\"\u003e`layout`\u003c/span\u003e is relative to the section's grid. Write it with `jsonencode(...)`.\n"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Tags for filtering the dashboard list.\n"
+                    },
+                    "timeRange": {
+                        "type": "string",
+                        "description": "Default time range, e.g. `{ type = \"relative\", value = \"12h\" }` or `{ type = \"absolute\",\u003cspan pulumi-lang-nodejs=\" startTime \" pulumi-lang-dotnet=\" StartTime \" pulumi-lang-go=\" startTime \" pulumi-lang-python=\" start_time \" pulumi-lang-yaml=\" startTime \" pulumi-lang-java=\" startTime \" pulumi-lang-hcl=\" start_time \"\u003e startTime \u003c/span\u003e= \"…\",\u003cspan pulumi-lang-nodejs=\" endTime \" pulumi-lang-dotnet=\" EndTime \" pulumi-lang-go=\" endTime \" pulumi-lang-python=\" end_time \" pulumi-lang-yaml=\" endTime \" pulumi-lang-java=\" endTime \" pulumi-lang-hcl=\" end_time \"\u003e endTime \u003c/span\u003e= \"…\" }`. Defaults to the API's default when unset. Write it with `jsonencode(...)`.\n"
+                    },
+                    "variables": {
+                        "type": "string",
+                        "description": "List of dashboard variables. Write it with `jsonencode(...)`.\n"
+                    },
+                    "widgets": {
+                        "type": "string",
+                        "description": "List of widget documents. Write it with `jsonencode(...)`.\n"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "maple:index/scrapeTarget:ScrapeTarget": {
+            "description": "A Prometheus-format endpoint Maple scrapes for metrics.\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as maple from \"@maple-dev/pulumi\";\n\nconst nodeExporter = new maple.ScrapeTarget(\"node_exporter\", {\n    name: \"node-exporter\",\n    url: \"https://metrics.example.com/metrics\",\n    scrapeIntervalSeconds: 30,\n    authType: \"bearer\",\n    authCredentials: metricsToken,\n    serviceName: \"infra\",\n});\n```\n```python\nimport pulumi\nimport pulumi_maple as maple\n\nnode_exporter = maple.ScrapeTarget(\"node_exporter\",\n    name=\"node-exporter\",\n    url=\"https://metrics.example.com/metrics\",\n    scrape_interval_seconds=30,\n    auth_type=\"bearer\",\n    auth_credentials=metrics_token,\n    service_name=\"infra\")\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing Pulumi;\nusing Maple = Pulumi.Maple;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var nodeExporter = new Maple.ScrapeTarget(\"node_exporter\", new()\n    {\n        Name = \"node-exporter\",\n        Url = \"https://metrics.example.com/metrics\",\n        ScrapeIntervalSeconds = 30,\n        AuthType = \"bearer\",\n        AuthCredentials = metricsToken,\n        ServiceName = \"infra\",\n    });\n\n});\n```\n```go\npackage main\n\nimport (\n\t\"github.com/MapleTechLabs/pulumi-maple/sdk/go/maple\"\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\t_, err := maple.NewScrapeTarget(ctx, \"node_exporter\", \u0026maple.ScrapeTargetArgs{\n\t\t\tName:                  pulumi.String(\"node-exporter\"),\n\t\t\tUrl:                   pulumi.String(\"https://metrics.example.com/metrics\"),\n\t\t\tScrapeIntervalSeconds: pulumi.Int(30),\n\t\t\tAuthType:              pulumi.String(\"bearer\"),\n\t\t\tAuthCredentials:       pulumi.Any(metricsToken),\n\t\t\tServiceName:           pulumi.String(\"infra\"),\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\treturn nil\n\t})\n}\n```\n```hcl\nterraform {\n  required_providers {\n    maple = {\n      source = \"pulumi/maple\"\n    }\n  }\n}\n\nresource \"maple_scrape_target\" \"node_exporter\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  name                    = \"node-exporter\"\n  url                     = \"https://metrics.example.com/metrics\"\n  scrape_interval_seconds = 30\n  auth_type               = \"bearer\"\n  auth_credentials        = metricsToken\n  service_name            = \"infra\"\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.maple.ScrapeTarget;\nimport com.pulumi.maple.ScrapeTargetArgs;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        var nodeExporter = new ScrapeTarget(\"nodeExporter\", ScrapeTargetArgs.builder()\n            .name(\"node-exporter\")\n            .url(\"https://metrics.example.com/metrics\")\n            .scrapeIntervalSeconds(30)\n            .authType(\"bearer\")\n            .authCredentials(metricsToken)\n            .serviceName(\"infra\")\n            .build());\n\n    }\n}\n```\n```yaml\nresources:\n  nodeExporter:\n    type: maple:ScrapeTarget\n    name: node_exporter\n    properties:\n      name: node-exporter\n      url: https://metrics.example.com/metrics\n      scrapeIntervalSeconds: 30\n      authType: bearer\n      authCredentials: ${metricsToken}\n      serviceName: infra\n```\n\u003c!--End PulumiCodeChooser --\u003e\n\n## Import\n\nThe `pulumi import` command can be used, for example:\n\n```sh\n$ pulumi import maple:index/scrapeTarget:ScrapeTarget example \u003cid\u003e\n```\n\n",
+            "properties": {
+                "authCredentials": {
+                    "type": "string",
+                    "description": "Credentials for \u003cspan pulumi-lang-nodejs=\"`authType`\" pulumi-lang-dotnet=\"`AuthType`\" pulumi-lang-go=\"`authType`\" pulumi-lang-python=\"`auth_type`\" pulumi-lang-yaml=\"`authType`\" pulumi-lang-java=\"`authType`\" pulumi-lang-hcl=\"`auth_type`\"\u003e`authType`\u003c/span\u003e. Write-only in the API.\n",
+                    "secret": true
+                },
+                "authType": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`none`\" pulumi-lang-dotnet=\"`None`\" pulumi-lang-go=\"`none`\" pulumi-lang-python=\"`none`\" pulumi-lang-yaml=\"`none`\" pulumi-lang-java=\"`none`\" pulumi-lang-hcl=\"`none`\"\u003e`none`\u003c/span\u003e (default), \u003cspan pulumi-lang-nodejs=\"`bearer`\" pulumi-lang-dotnet=\"`Bearer`\" pulumi-lang-go=\"`bearer`\" pulumi-lang-python=\"`bearer`\" pulumi-lang-yaml=\"`bearer`\" pulumi-lang-java=\"`bearer`\" pulumi-lang-hcl=\"`bearer`\"\u003e`bearer`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`basic`\" pulumi-lang-dotnet=\"`Basic`\" pulumi-lang-go=\"`basic`\" pulumi-lang-python=\"`basic`\" pulumi-lang-yaml=\"`basic`\" pulumi-lang-java=\"`basic`\" pulumi-lang-hcl=\"`basic`\"\u003e`basic`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`token`\" pulumi-lang-dotnet=\"`Token`\" pulumi-lang-go=\"`token`\" pulumi-lang-python=\"`token`\" pulumi-lang-yaml=\"`token`\" pulumi-lang-java=\"`token`\" pulumi-lang-hcl=\"`token`\"\u003e`token`\u003c/span\u003e.\n"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the target is scraped. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                },
+                "excludeBranches": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e: skip these branches.\n"
+                },
+                "includeBranches": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e: only scrape these branches.\n"
+                },
+                "labelsJson": {
+                    "type": "string",
+                    "description": "Extra labels added to every series, as a JSON object string.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Display name.\n"
+                },
+                "organization": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e: the PlanetScale organization.\n"
+                },
+                "scrapeIntervalSeconds": {
+                    "type": "integer",
+                    "description": "Seconds between scrapes, 5 to 300.\n"
+                },
+                "serviceName": {
+                    "type": "string",
+                    "description": "`service.name` given to the scraped series.\n"
+                },
+                "targetType": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`prometheus`\" pulumi-lang-dotnet=\"`Prometheus`\" pulumi-lang-go=\"`prometheus`\" pulumi-lang-python=\"`prometheus`\" pulumi-lang-yaml=\"`prometheus`\" pulumi-lang-java=\"`prometheus`\" pulumi-lang-hcl=\"`prometheus`\"\u003e`prometheus`\u003c/span\u003e (default), \u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`supabase`\" pulumi-lang-dotnet=\"`Supabase`\" pulumi-lang-go=\"`supabase`\" pulumi-lang-python=\"`supabase`\" pulumi-lang-yaml=\"`supabase`\" pulumi-lang-java=\"`supabase`\" pulumi-lang-hcl=\"`supabase`\"\u003e`supabase`\u003c/span\u003e. Changing it replaces the target.\n"
+                },
+                "url": {
+                    "type": "string",
+                    "description": "The metrics endpoint to scrape.\n"
+                }
+            },
+            "required": [
+                "authType",
+                "enabled",
+                "name",
+                "scrapeIntervalSeconds",
+                "targetType",
+                "url"
+            ],
+            "inputProperties": {
+                "authCredentials": {
+                    "type": "string",
+                    "description": "Credentials for \u003cspan pulumi-lang-nodejs=\"`authType`\" pulumi-lang-dotnet=\"`AuthType`\" pulumi-lang-go=\"`authType`\" pulumi-lang-python=\"`auth_type`\" pulumi-lang-yaml=\"`authType`\" pulumi-lang-java=\"`authType`\" pulumi-lang-hcl=\"`auth_type`\"\u003e`authType`\u003c/span\u003e. Write-only in the API.\n",
+                    "secret": true
+                },
+                "authType": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`none`\" pulumi-lang-dotnet=\"`None`\" pulumi-lang-go=\"`none`\" pulumi-lang-python=\"`none`\" pulumi-lang-yaml=\"`none`\" pulumi-lang-java=\"`none`\" pulumi-lang-hcl=\"`none`\"\u003e`none`\u003c/span\u003e (default), \u003cspan pulumi-lang-nodejs=\"`bearer`\" pulumi-lang-dotnet=\"`Bearer`\" pulumi-lang-go=\"`bearer`\" pulumi-lang-python=\"`bearer`\" pulumi-lang-yaml=\"`bearer`\" pulumi-lang-java=\"`bearer`\" pulumi-lang-hcl=\"`bearer`\"\u003e`bearer`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`basic`\" pulumi-lang-dotnet=\"`Basic`\" pulumi-lang-go=\"`basic`\" pulumi-lang-python=\"`basic`\" pulumi-lang-yaml=\"`basic`\" pulumi-lang-java=\"`basic`\" pulumi-lang-hcl=\"`basic`\"\u003e`basic`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`token`\" pulumi-lang-dotnet=\"`Token`\" pulumi-lang-go=\"`token`\" pulumi-lang-python=\"`token`\" pulumi-lang-yaml=\"`token`\" pulumi-lang-java=\"`token`\" pulumi-lang-hcl=\"`token`\"\u003e`token`\u003c/span\u003e.\n"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether the target is scraped. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                },
+                "excludeBranches": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e: skip these branches.\n"
+                },
+                "includeBranches": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e: only scrape these branches.\n"
+                },
+                "labelsJson": {
+                    "type": "string",
+                    "description": "Extra labels added to every series, as a JSON object string.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Display name.\n"
+                },
+                "organization": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e: the PlanetScale organization.\n"
+                },
+                "scrapeIntervalSeconds": {
+                    "type": "integer",
+                    "description": "Seconds between scrapes, 5 to 300.\n"
+                },
+                "serviceName": {
+                    "type": "string",
+                    "description": "`service.name` given to the scraped series.\n"
+                },
+                "targetType": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`prometheus`\" pulumi-lang-dotnet=\"`Prometheus`\" pulumi-lang-go=\"`prometheus`\" pulumi-lang-python=\"`prometheus`\" pulumi-lang-yaml=\"`prometheus`\" pulumi-lang-java=\"`prometheus`\" pulumi-lang-hcl=\"`prometheus`\"\u003e`prometheus`\u003c/span\u003e (default), \u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`supabase`\" pulumi-lang-dotnet=\"`Supabase`\" pulumi-lang-go=\"`supabase`\" pulumi-lang-python=\"`supabase`\" pulumi-lang-yaml=\"`supabase`\" pulumi-lang-java=\"`supabase`\" pulumi-lang-hcl=\"`supabase`\"\u003e`supabase`\u003c/span\u003e. Changing it replaces the target.\n"
+                },
+                "url": {
+                    "type": "string",
+                    "description": "The metrics endpoint to scrape.\n"
+                }
+            },
+            "requiredInputs": [
+                "name"
+            ],
+            "stateInputs": {
+                "description": "Input properties used for looking up and filtering ScrapeTarget resources.\n",
+                "properties": {
+                    "authCredentials": {
+                        "type": "string",
+                        "description": "Credentials for \u003cspan pulumi-lang-nodejs=\"`authType`\" pulumi-lang-dotnet=\"`AuthType`\" pulumi-lang-go=\"`authType`\" pulumi-lang-python=\"`auth_type`\" pulumi-lang-yaml=\"`authType`\" pulumi-lang-java=\"`authType`\" pulumi-lang-hcl=\"`auth_type`\"\u003e`authType`\u003c/span\u003e. Write-only in the API.\n",
+                        "secret": true
+                    },
+                    "authType": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`none`\" pulumi-lang-dotnet=\"`None`\" pulumi-lang-go=\"`none`\" pulumi-lang-python=\"`none`\" pulumi-lang-yaml=\"`none`\" pulumi-lang-java=\"`none`\" pulumi-lang-hcl=\"`none`\"\u003e`none`\u003c/span\u003e (default), \u003cspan pulumi-lang-nodejs=\"`bearer`\" pulumi-lang-dotnet=\"`Bearer`\" pulumi-lang-go=\"`bearer`\" pulumi-lang-python=\"`bearer`\" pulumi-lang-yaml=\"`bearer`\" pulumi-lang-java=\"`bearer`\" pulumi-lang-hcl=\"`bearer`\"\u003e`bearer`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`basic`\" pulumi-lang-dotnet=\"`Basic`\" pulumi-lang-go=\"`basic`\" pulumi-lang-python=\"`basic`\" pulumi-lang-yaml=\"`basic`\" pulumi-lang-java=\"`basic`\" pulumi-lang-hcl=\"`basic`\"\u003e`basic`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`token`\" pulumi-lang-dotnet=\"`Token`\" pulumi-lang-go=\"`token`\" pulumi-lang-python=\"`token`\" pulumi-lang-yaml=\"`token`\" pulumi-lang-java=\"`token`\" pulumi-lang-hcl=\"`token`\"\u003e`token`\u003c/span\u003e.\n"
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Whether the target is scraped. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                    },
+                    "excludeBranches": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e: skip these branches.\n"
+                    },
+                    "includeBranches": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e: only scrape these branches.\n"
+                    },
+                    "labelsJson": {
+                        "type": "string",
+                        "description": "Extra labels added to every series, as a JSON object string.\n"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Display name.\n"
+                    },
+                    "organization": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e: the PlanetScale organization.\n"
+                    },
+                    "scrapeIntervalSeconds": {
+                        "type": "integer",
+                        "description": "Seconds between scrapes, 5 to 300.\n"
+                    },
+                    "serviceName": {
+                        "type": "string",
+                        "description": "`service.name` given to the scraped series.\n"
+                    },
+                    "targetType": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`prometheus`\" pulumi-lang-dotnet=\"`Prometheus`\" pulumi-lang-go=\"`prometheus`\" pulumi-lang-python=\"`prometheus`\" pulumi-lang-yaml=\"`prometheus`\" pulumi-lang-java=\"`prometheus`\" pulumi-lang-hcl=\"`prometheus`\"\u003e`prometheus`\u003c/span\u003e (default), \u003cspan pulumi-lang-nodejs=\"`planetscale`\" pulumi-lang-dotnet=\"`Planetscale`\" pulumi-lang-go=\"`planetscale`\" pulumi-lang-python=\"`planetscale`\" pulumi-lang-yaml=\"`planetscale`\" pulumi-lang-java=\"`planetscale`\" pulumi-lang-hcl=\"`planetscale`\"\u003e`planetscale`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`supabase`\" pulumi-lang-dotnet=\"`Supabase`\" pulumi-lang-go=\"`supabase`\" pulumi-lang-python=\"`supabase`\" pulumi-lang-yaml=\"`supabase`\" pulumi-lang-java=\"`supabase`\" pulumi-lang-hcl=\"`supabase`\"\u003e`supabase`\u003c/span\u003e. Changing it replaces the target.\n"
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "The metrics endpoint to scrape.\n"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "maple:index/uptimeMonitor:UptimeMonitor": {
+            "description": "An HTTP, TCP, DNS or heartbeat uptime monitor.\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as maple from \"@maple-dev/pulumi\";\n\nconst api = new maple.UptimeMonitor(\"api\", {\n    name: \"Public API\",\n    config: JSON.stringify({\n        type: \"http\",\n        url: \"https://api.example.com/health\",\n        method: \"GET\",\n        assertions: [\n            {\n                type: \"status\",\n                op: \"is\",\n                value: \"2xx\",\n            },\n            {\n                type: \"latency\",\n                under_ms: 1000,\n            },\n        ],\n    }),\n    intervalSeconds: 60,\n    failuresToDown: 2,\n    serviceName: \"api\",\n    destinationIds: [pagerduty.id],\n});\n// A heartbeat: your job pings heartbeat_url, Maple alerts when it stops.\nconst nightlyBackup = new maple.UptimeMonitor(\"nightly_backup\", {\n    name: \"Nightly backup\",\n    config: JSON.stringify({\n        type: \"heartbeat\",\n        schedule: {\n            type: \"cron\",\n            expression: \"0 3 * * *\",\n            timezone: \"Europe/Berlin\",\n        },\n        grace_seconds: 900,\n    }),\n    destinationIds: [pagerduty.id],\n});\nexport const backupHeartbeatUrl = nightlyBackup.heartbeatUrl;\n```\n```python\nimport pulumi\nimport json\nimport pulumi_maple as maple\n\napi = maple.UptimeMonitor(\"api\",\n    name=\"Public API\",\n    config=json.dumps({\n        \"type\": \"http\",\n        \"url\": \"https://api.example.com/health\",\n        \"method\": \"GET\",\n        \"assertions\": [\n            {\n                \"type\": \"status\",\n                \"op\": \"is\",\n                \"value\": \"2xx\",\n            },\n            {\n                \"type\": \"latency\",\n                \"under_ms\": 1000,\n            },\n        ],\n    }),\n    interval_seconds=60,\n    failures_to_down=2,\n    service_name=\"api\",\n    destination_ids=[pagerduty[\"id\"]])\n# A heartbeat: your job pings heartbeat_url, Maple alerts when it stops.\nnightly_backup = maple.UptimeMonitor(\"nightly_backup\",\n    name=\"Nightly backup\",\n    config=json.dumps({\n        \"type\": \"heartbeat\",\n        \"schedule\": {\n            \"type\": \"cron\",\n            \"expression\": \"0 3 * * *\",\n            \"timezone\": \"Europe/Berlin\",\n        },\n        \"grace_seconds\": 900,\n    }),\n    destination_ids=[pagerduty[\"id\"]])\npulumi.export(\"backupHeartbeatUrl\", nightly_backup.heartbeat_url)\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing System.Text.Json;\nusing Pulumi;\nusing Maple = Pulumi.Maple;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var api = new Maple.UptimeMonitor(\"api\", new()\n    {\n        Name = \"Public API\",\n        Config = JsonSerializer.Serialize(new Dictionary\u003cstring, object?\u003e\n        {\n            [\"type\"] = \"http\",\n            [\"url\"] = \"https://api.example.com/health\",\n            [\"method\"] = \"GET\",\n            [\"assertions\"] = new[]\n            {\n                new Dictionary\u003cstring, object?\u003e\n                {\n                    [\"type\"] = \"status\",\n                    [\"op\"] = \"is\",\n                    [\"value\"] = \"2xx\",\n                },\n                new Dictionary\u003cstring, object?\u003e\n                {\n                    [\"type\"] = \"latency\",\n                    [\"under_ms\"] = 1000,\n                },\n            },\n        }),\n        IntervalSeconds = 60,\n        FailuresToDown = 2,\n        ServiceName = \"api\",\n        DestinationIds = new[]\n        {\n            pagerduty.Id,\n        },\n    });\n\n    // A heartbeat: your job pings heartbeat_url, Maple alerts when it stops.\n    var nightlyBackup = new Maple.UptimeMonitor(\"nightly_backup\", new()\n    {\n        Name = \"Nightly backup\",\n        Config = JsonSerializer.Serialize(new Dictionary\u003cstring, object?\u003e\n        {\n            [\"type\"] = \"heartbeat\",\n            [\"schedule\"] = new Dictionary\u003cstring, object?\u003e\n            {\n                [\"type\"] = \"cron\",\n                [\"expression\"] = \"0 3 * * *\",\n                [\"timezone\"] = \"Europe/Berlin\",\n            },\n            [\"grace_seconds\"] = 900,\n        }),\n        DestinationIds = new[]\n        {\n            pagerduty.Id,\n        },\n    });\n\n    return new Dictionary\u003cstring, object?\u003e\n    {\n        [\"backupHeartbeatUrl\"] = nightlyBackup.HeartbeatUrl,\n    };\n});\n```\n```go\npackage main\n\nimport (\n\t\"encoding/json\"\n\n\t\"github.com/MapleTechLabs/pulumi-maple/sdk/go/maple\"\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\ttmpJSON0, err := json.Marshal(map[string]interface{}{\n\t\t\t\"type\":   \"http\",\n\t\t\t\"url\":    \"https://api.example.com/health\",\n\t\t\t\"method\": \"GET\",\n\t\t\t\"assertions\": []interface{}{\n\t\t\t\tmap[string]string{\n\t\t\t\t\t\"type\":  \"status\",\n\t\t\t\t\t\"op\":    \"is\",\n\t\t\t\t\t\"value\": \"2xx\",\n\t\t\t\t},\n\t\t\t\tmap[string]interface{}{\n\t\t\t\t\t\"type\":     \"latency\",\n\t\t\t\t\t\"under_ms\": 1000,\n\t\t\t\t},\n\t\t\t},\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\tjson0 := string(tmpJSON0)\n\t\t_, err = maple.NewUptimeMonitor(ctx, \"api\", \u0026maple.UptimeMonitorArgs{\n\t\t\tName:            pulumi.String(\"Public API\"),\n\t\t\tConfig:          pulumi.String(json0),\n\t\t\tIntervalSeconds: pulumi.Int(60),\n\t\t\tFailuresToDown:  pulumi.Int(2),\n\t\t\tServiceName:     pulumi.String(\"api\"),\n\t\t\tDestinationIds: pulumi.StringArray{\n\t\t\t\tpagerduty.Id,\n\t\t\t},\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\ttmpJSON1, err := json.Marshal(map[string]interface{}{\n\t\t\t\"type\": \"heartbeat\",\n\t\t\t\"schedule\": map[string]string{\n\t\t\t\t\"type\":       \"cron\",\n\t\t\t\t\"expression\": \"0 3 * * *\",\n\t\t\t\t\"timezone\":   \"Europe/Berlin\",\n\t\t\t},\n\t\t\t\"grace_seconds\": 900,\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\tjson1 := string(tmpJSON1)\n\t\t// A heartbeat: your job pings heartbeat_url, Maple alerts when it stops.\n\t\tnightlyBackup, err := maple.NewUptimeMonitor(ctx, \"nightly_backup\", \u0026maple.UptimeMonitorArgs{\n\t\t\tName:   pulumi.String(\"Nightly backup\"),\n\t\t\tConfig: pulumi.String(json1),\n\t\t\tDestinationIds: pulumi.StringArray{\n\t\t\t\tpagerduty.Id,\n\t\t\t},\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\tctx.Export(\"backupHeartbeatUrl\", nightlyBackup.HeartbeatUrl)\n\t\treturn nil\n\t})\n}\n```\n```hcl\nterraform {\n  required_providers {\n    maple = {\n      source = \"pulumi/maple\"\n    }\n  }\n}\n\nresource \"maple_uptime_monitor\" \"api\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  name = \"Public API\"\n  config = jsonencode({\n    \"type\"   = \"http\"\n    \"url\"    = \"https://api.example.com/health\"\n    \"method\" = \"GET\"\n    \"assertions\" = [{\n      \"type\"  = \"status\"\n      \"op\"    = \"is\"\n      \"value\" = \"2xx\"\n      }, {\n      \"type\"     = \"latency\"\n      \"under_ms\" = 1000\n    }]\n  })\n  interval_seconds = 60\n  failures_to_down = 2\n  service_name     = \"api\"\n  destination_ids  = [pagerduty.id]\n}\n# A heartbeat: your job pings heartbeat_url, Maple alerts when it stops.\nresource \"maple_uptime_monitor\" \"nightly_backup\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  name = \"Nightly backup\"\n  config = jsonencode({\n    \"type\" = \"heartbeat\"\n    \"schedule\" = {\n      \"type\"       = \"cron\"\n      \"expression\" = \"0 3 * * *\"\n      \"timezone\"   = \"Europe/Berlin\"\n    }\n    \"grace_seconds\" = 900\n  })\n  destination_ids = [pagerduty.id]\n}\noutput \"backupHeartbeatUrl\" {\n  value = maple_uptime_monitor.nightly_backup.heartbeat_url\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.maple.UptimeMonitor;\nimport com.pulumi.maple.UptimeMonitorArgs;\nimport static com.pulumi.codegen.internal.Serialization.*;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        var api = new UptimeMonitor(\"api\", UptimeMonitorArgs.builder()\n            .name(\"Public API\")\n            .config(serializeJson(\n                jsonObject(\n                    jsonProperty(\"type\", \"http\"),\n                    jsonProperty(\"url\", \"https://api.example.com/health\"),\n                    jsonProperty(\"method\", \"GET\"),\n                    jsonProperty(\"assertions\", jsonArray(\n                        jsonObject(\n                            jsonProperty(\"type\", \"status\"),\n                            jsonProperty(\"op\", \"is\"),\n                            jsonProperty(\"value\", \"2xx\")\n                        ), \n                        jsonObject(\n                            jsonProperty(\"type\", \"latency\"),\n                            jsonProperty(\"under_ms\", 1000)\n                        )\n                    ))\n                )))\n            .intervalSeconds(60)\n            .failuresToDown(2)\n            .serviceName(\"api\")\n            .destinationIds(pagerduty.get(\"id\"))\n            .build());\n\n        // A heartbeat: your job pings heartbeat_url, Maple alerts when it stops.\n        var nightlyBackup = new UptimeMonitor(\"nightlyBackup\", UptimeMonitorArgs.builder()\n            .name(\"Nightly backup\")\n            .config(serializeJson(\n                jsonObject(\n                    jsonProperty(\"type\", \"heartbeat\"),\n                    jsonProperty(\"schedule\", jsonObject(\n                        jsonProperty(\"type\", \"cron\"),\n                        jsonProperty(\"expression\", \"0 3 * * *\"),\n                        jsonProperty(\"timezone\", \"Europe/Berlin\")\n                    )),\n                    jsonProperty(\"grace_seconds\", 900)\n                )))\n            .destinationIds(pagerduty.get(\"id\"))\n            .build());\n\n        ctx.export(\"backupHeartbeatUrl\", nightlyBackup.heartbeatUrl());\n    }\n}\n```\n```yaml\nresources:\n  api:\n    type: maple:UptimeMonitor\n    properties:\n      name: Public API\n      config:\n        fn::toJSON:\n          type: http\n          url: https://api.example.com/health\n          method: GET\n          assertions:\n            - type: status\n              op: is\n              value: 2xx\n            - type: latency\n              under_ms: 1000\n      intervalSeconds: 60\n      failuresToDown: 2\n      serviceName: api\n      destinationIds:\n        - ${pagerduty.id}\n  # A heartbeat: your job pings heartbeat_url, Maple alerts when it stops.\n  nightlyBackup:\n    type: maple:UptimeMonitor\n    name: nightly_backup\n    properties:\n      name: Nightly backup\n      config:\n        fn::toJSON:\n          type: heartbeat\n          schedule:\n            type: cron\n            expression: 0 3 * * *\n            timezone: Europe/Berlin\n          grace_seconds: 900\n      destinationIds:\n        - ${pagerduty.id}\noutputs:\n  backupHeartbeatUrl: ${nightlyBackup.heartbeatUrl}\n```\n\u003c!--End PulumiCodeChooser --\u003e\n\n## Import\n\nThe `pulumi import` command can be used, for example:\n\n```sh\n$ pulumi import maple:index/uptimeMonitor:UptimeMonitor example \u003cid\u003e\n```\n\n",
+            "properties": {
+                "alertRuleId": {
+                    "type": "string",
+                    "description": "The alert rule that delivers this monitor's notifications.\n"
+                },
+                "config": {
+                    "type": "string",
+                    "description": "The check, with \u003cspan pulumi-lang-nodejs=\"`type`\" pulumi-lang-dotnet=\"`Type`\" pulumi-lang-go=\"`type`\" pulumi-lang-python=\"`type`\" pulumi-lang-yaml=\"`type`\" pulumi-lang-java=\"`type`\" pulumi-lang-hcl=\"`type`\"\u003e`type`\u003c/span\u003e \u003cspan pulumi-lang-nodejs=\"`http`\" pulumi-lang-dotnet=\"`Http`\" pulumi-lang-go=\"`http`\" pulumi-lang-python=\"`http`\" pulumi-lang-yaml=\"`http`\" pulumi-lang-java=\"`http`\" pulumi-lang-hcl=\"`http`\"\u003e`http`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`tcp`\" pulumi-lang-dotnet=\"`Tcp`\" pulumi-lang-go=\"`tcp`\" pulumi-lang-python=\"`tcp`\" pulumi-lang-yaml=\"`tcp`\" pulumi-lang-java=\"`tcp`\" pulumi-lang-hcl=\"`tcp`\"\u003e`tcp`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`dns`\" pulumi-lang-dotnet=\"`Dns`\" pulumi-lang-go=\"`dns`\" pulumi-lang-python=\"`dns`\" pulumi-lang-yaml=\"`dns`\" pulumi-lang-java=\"`dns`\" pulumi-lang-hcl=\"`dns`\"\u003e`dns`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`heartbeat`\" pulumi-lang-dotnet=\"`Heartbeat`\" pulumi-lang-go=\"`heartbeat`\" pulumi-lang-python=\"`heartbeat`\" pulumi-lang-yaml=\"`heartbeat`\" pulumi-lang-java=\"`heartbeat`\" pulumi-lang-hcl=\"`heartbeat`\"\u003e`heartbeat`\u003c/span\u003e. Write it with `jsonencode(...)`. Changing \u003cspan pulumi-lang-nodejs=\"`type`\" pulumi-lang-dotnet=\"`Type`\" pulumi-lang-go=\"`type`\" pulumi-lang-python=\"`type`\" pulumi-lang-yaml=\"`type`\" pulumi-lang-java=\"`type`\" pulumi-lang-hcl=\"`type`\"\u003e`type`\u003c/span\u003e replaces the monitor.\n"
+                },
+                "destinationIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "`dest_…` IDs notified when the monitor goes down or recovers.\n"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether checks run. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                },
+                "failuresToDown": {
+                    "type": "integer",
+                    "description": "Failed checks in a row before the monitor is down, 1 to 10.\n"
+                },
+                "heartbeatUrl": {
+                    "type": "string",
+                    "description": "\u003cspan pulumi-lang-nodejs=\"`heartbeat`\" pulumi-lang-dotnet=\"`Heartbeat`\" pulumi-lang-go=\"`heartbeat`\" pulumi-lang-python=\"`heartbeat`\" pulumi-lang-yaml=\"`heartbeat`\" pulumi-lang-java=\"`heartbeat`\" pulumi-lang-hcl=\"`heartbeat`\"\u003e`heartbeat`\u003c/span\u003e: the URL your job pings.\n"
+                },
+                "intervalSeconds": {
+                    "type": "integer",
+                    "description": "Seconds between checks, 30 to 3600.\n"
+                },
+                "kind": {
+                    "type": "string",
+                    "description": "The monitor kind, from `config.type`.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Display name.\n"
+                },
+                "serviceName": {
+                    "type": "string",
+                    "description": "Attach the monitor to this service.\n"
+                }
+            },
+            "required": [
+                "alertRuleId",
+                "config",
+                "enabled",
+                "failuresToDown",
+                "heartbeatUrl",
+                "intervalSeconds",
+                "kind",
+                "name"
+            ],
+            "inputProperties": {
+                "config": {
+                    "type": "string",
+                    "description": "The check, with \u003cspan pulumi-lang-nodejs=\"`type`\" pulumi-lang-dotnet=\"`Type`\" pulumi-lang-go=\"`type`\" pulumi-lang-python=\"`type`\" pulumi-lang-yaml=\"`type`\" pulumi-lang-java=\"`type`\" pulumi-lang-hcl=\"`type`\"\u003e`type`\u003c/span\u003e \u003cspan pulumi-lang-nodejs=\"`http`\" pulumi-lang-dotnet=\"`Http`\" pulumi-lang-go=\"`http`\" pulumi-lang-python=\"`http`\" pulumi-lang-yaml=\"`http`\" pulumi-lang-java=\"`http`\" pulumi-lang-hcl=\"`http`\"\u003e`http`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`tcp`\" pulumi-lang-dotnet=\"`Tcp`\" pulumi-lang-go=\"`tcp`\" pulumi-lang-python=\"`tcp`\" pulumi-lang-yaml=\"`tcp`\" pulumi-lang-java=\"`tcp`\" pulumi-lang-hcl=\"`tcp`\"\u003e`tcp`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`dns`\" pulumi-lang-dotnet=\"`Dns`\" pulumi-lang-go=\"`dns`\" pulumi-lang-python=\"`dns`\" pulumi-lang-yaml=\"`dns`\" pulumi-lang-java=\"`dns`\" pulumi-lang-hcl=\"`dns`\"\u003e`dns`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`heartbeat`\" pulumi-lang-dotnet=\"`Heartbeat`\" pulumi-lang-go=\"`heartbeat`\" pulumi-lang-python=\"`heartbeat`\" pulumi-lang-yaml=\"`heartbeat`\" pulumi-lang-java=\"`heartbeat`\" pulumi-lang-hcl=\"`heartbeat`\"\u003e`heartbeat`\u003c/span\u003e. Write it with `jsonencode(...)`. Changing \u003cspan pulumi-lang-nodejs=\"`type`\" pulumi-lang-dotnet=\"`Type`\" pulumi-lang-go=\"`type`\" pulumi-lang-python=\"`type`\" pulumi-lang-yaml=\"`type`\" pulumi-lang-java=\"`type`\" pulumi-lang-hcl=\"`type`\"\u003e`type`\u003c/span\u003e replaces the monitor.\n"
+                },
+                "destinationIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "`dest_…` IDs notified when the monitor goes down or recovers.\n"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether checks run. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                },
+                "failuresToDown": {
+                    "type": "integer",
+                    "description": "Failed checks in a row before the monitor is down, 1 to 10.\n"
+                },
+                "intervalSeconds": {
+                    "type": "integer",
+                    "description": "Seconds between checks, 30 to 3600.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Display name.\n"
+                },
+                "serviceName": {
+                    "type": "string",
+                    "description": "Attach the monitor to this service.\n"
+                }
+            },
+            "requiredInputs": [
+                "config",
+                "name"
+            ],
+            "stateInputs": {
+                "description": "Input properties used for looking up and filtering UptimeMonitor resources.\n",
+                "properties": {
+                    "alertRuleId": {
+                        "type": "string",
+                        "description": "The alert rule that delivers this monitor's notifications.\n"
+                    },
+                    "config": {
+                        "type": "string",
+                        "description": "The check, with \u003cspan pulumi-lang-nodejs=\"`type`\" pulumi-lang-dotnet=\"`Type`\" pulumi-lang-go=\"`type`\" pulumi-lang-python=\"`type`\" pulumi-lang-yaml=\"`type`\" pulumi-lang-java=\"`type`\" pulumi-lang-hcl=\"`type`\"\u003e`type`\u003c/span\u003e \u003cspan pulumi-lang-nodejs=\"`http`\" pulumi-lang-dotnet=\"`Http`\" pulumi-lang-go=\"`http`\" pulumi-lang-python=\"`http`\" pulumi-lang-yaml=\"`http`\" pulumi-lang-java=\"`http`\" pulumi-lang-hcl=\"`http`\"\u003e`http`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`tcp`\" pulumi-lang-dotnet=\"`Tcp`\" pulumi-lang-go=\"`tcp`\" pulumi-lang-python=\"`tcp`\" pulumi-lang-yaml=\"`tcp`\" pulumi-lang-java=\"`tcp`\" pulumi-lang-hcl=\"`tcp`\"\u003e`tcp`\u003c/span\u003e, \u003cspan pulumi-lang-nodejs=\"`dns`\" pulumi-lang-dotnet=\"`Dns`\" pulumi-lang-go=\"`dns`\" pulumi-lang-python=\"`dns`\" pulumi-lang-yaml=\"`dns`\" pulumi-lang-java=\"`dns`\" pulumi-lang-hcl=\"`dns`\"\u003e`dns`\u003c/span\u003e or \u003cspan pulumi-lang-nodejs=\"`heartbeat`\" pulumi-lang-dotnet=\"`Heartbeat`\" pulumi-lang-go=\"`heartbeat`\" pulumi-lang-python=\"`heartbeat`\" pulumi-lang-yaml=\"`heartbeat`\" pulumi-lang-java=\"`heartbeat`\" pulumi-lang-hcl=\"`heartbeat`\"\u003e`heartbeat`\u003c/span\u003e. Write it with `jsonencode(...)`. Changing \u003cspan pulumi-lang-nodejs=\"`type`\" pulumi-lang-dotnet=\"`Type`\" pulumi-lang-go=\"`type`\" pulumi-lang-python=\"`type`\" pulumi-lang-yaml=\"`type`\" pulumi-lang-java=\"`type`\" pulumi-lang-hcl=\"`type`\"\u003e`type`\u003c/span\u003e replaces the monitor.\n"
+                    },
+                    "destinationIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "`dest_…` IDs notified when the monitor goes down or recovers.\n"
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Whether checks run. Defaults to \u003cspan pulumi-lang-nodejs=\"`true`\" pulumi-lang-dotnet=\"`True`\" pulumi-lang-go=\"`true`\" pulumi-lang-python=\"`true`\" pulumi-lang-yaml=\"`true`\" pulumi-lang-java=\"`true`\" pulumi-lang-hcl=\"`true`\"\u003e`true`\u003c/span\u003e.\n"
+                    },
+                    "failuresToDown": {
+                        "type": "integer",
+                        "description": "Failed checks in a row before the monitor is down, 1 to 10.\n"
+                    },
+                    "heartbeatUrl": {
+                        "type": "string",
+                        "description": "\u003cspan pulumi-lang-nodejs=\"`heartbeat`\" pulumi-lang-dotnet=\"`Heartbeat`\" pulumi-lang-go=\"`heartbeat`\" pulumi-lang-python=\"`heartbeat`\" pulumi-lang-yaml=\"`heartbeat`\" pulumi-lang-java=\"`heartbeat`\" pulumi-lang-hcl=\"`heartbeat`\"\u003e`heartbeat`\u003c/span\u003e: the URL your job pings.\n"
+                    },
+                    "intervalSeconds": {
+                        "type": "integer",
+                        "description": "Seconds between checks, 30 to 3600.\n"
+                    },
+                    "kind": {
+                        "type": "string",
+                        "description": "The monitor kind, from `config.type`.\n"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Display name.\n"
+                    },
+                    "serviceName": {
+                        "type": "string",
+                        "description": "Attach the monitor to this service.\n"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "functions": {
+        "maple:index/getIngestKeys:getIngestKeys": {
+            "description": "The organization's ingest keys, for wiring OpenTelemetry exporters without copying keys by hand. Reading them needs an org-admin API key.\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as kubernetes from \"@pulumi/kubernetes\";\nimport * as maple from \"@maple-dev/pulumi\";\n\nconst _this = maple.getIngestKeys({});\n// Hand the private key to a service's OpenTelemetry exporter.\nconst otel = new kubernetes.index.Secret(\"otel\", {\n    metadata: [{\n        name: \"maple-ingest\",\n    }],\n    data: {\n        MAPLE_INGEST_KEY: _this.privateKey,\n    },\n});\n```\n```python\nimport pulumi\nimport pulumi_kubernetes as kubernetes\nimport pulumi_maple as maple\n\nthis = maple.get_ingest_keys()\n# Hand the private key to a service's OpenTelemetry exporter.\notel = kubernetes.Secret(\"otel\",\n    metadata=[{\n        name: maple-ingest,\n    }],\n    data={\n        MAPLE_INGEST_KEY: this.private_key,\n    })\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing Pulumi;\nusing Kubernetes = Pulumi.Kubernetes;\nusing Maple = Pulumi.Maple;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var @this = Maple.GetIngestKeys.Invoke();\n\n    // Hand the private key to a service's OpenTelemetry exporter.\n    var otel = new Kubernetes.Secret(\"otel\", new()\n    {\n        Metadata = new[]\n        {\n            \n            {\n                { \"name\", \"maple-ingest\" },\n            },\n        },\n        Data = \n        {\n            { \"MAPLE_INGEST_KEY\", @this.Apply(getIngestKeysResult =\u003e getIngestKeysResult.PrivateKey) },\n        },\n    });\n\n});\n```\n```go\npackage main\n\nimport (\n\t\"github.com/MapleTechLabs/pulumi-maple/sdk/go/maple\"\n\t\"github.com/pulumi/pulumi-kubernetes/sdk/go/kubernetes\"\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\tthis, err := maple.GetIngestKeys(ctx, map[string]interface{}{}, nil)\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\t// Hand the private key to a service's OpenTelemetry exporter.\n\t\t_, err = kubernetes.NewSecret(ctx, \"otel\", \u0026kubernetes.SecretArgs{\n\t\t\tMetadata: []map[string]string{\n\t\t\t\t{\n\t\t\t\t\t\"name\": \"maple-ingest\",\n\t\t\t\t},\n\t\t\t},\n\t\t\tData: map[string]interface{}{\n\t\t\t\t\"MAPLE_INGEST_KEY\": this.PrivateKey,\n\t\t\t},\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\treturn nil\n\t})\n}\n```\n```hcl\nterraform {\n  required_providers {\n    maple = {\n      source = \"pulumi/maple\"\n    }\n  }\n}\n\ndata \"maple_ingest_keys\" \"this\" {\n}\n\n# Hand the private key to a service's OpenTelemetry exporter.\nresource \"kubernetes_secret\" \"otel\" {\n  lifecycle {\n    create_before_destroy = true\n  }\n  metadata = [{\n    \"name\" = \"maple-ingest\"\n  }]\n  data = {\n    \"MAPLE_INGEST_KEY\" = data.maple_ingest_keys.this.private_key\n  }\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.maple.MapleFunctions;\nimport com.pulumi.kubernetes.Secret;\nimport com.pulumi.kubernetes.SecretArgs;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        final var this = MapleFunctions.getIngestKeys(%!v(PANIC=Format method: runtime error: invalid memory address or nil pointer dereference);\n\n        // Hand the private key to a service's OpenTelemetry exporter.\n        var otel = new Secret(\"otel\", SecretArgs.builder()\n            .metadata(Arrays.asList(Map.of(\"name\", \"maple-ingest\")))\n            .data(Map.of(\"MAPLE_INGEST_KEY\", this_.privateKey()))\n            .build());\n\n    }\n}\n```\n```yaml\nresources:\n  # Hand the private key to a service's OpenTelemetry exporter.\n  otel:\n    type: kubernetes:Secret\n    properties:\n      metadata:\n        - name: maple-ingest\n      data:\n        MAPLE_INGEST_KEY: ${this.privateKey}\nvariables:\n  this:\n    fn::invoke:\n      function: maple:getIngestKeys\n      arguments: {}\n```\n\u003c!--End PulumiCodeChooser --\u003e\n",
+            "outputs": {
+                "description": "A collection of values returned by getIngestKeys.\n",
+                "properties": {
+                    "privateKey": {
+                        "description": "The private ingest key (`maple_sk_…`) for servers.\n",
+                        "secret": true,
+                        "type": "string"
+                    },
+                    "privateRotatedAt": {
+                        "description": "When the private key was last rolled.\n",
+                        "type": "string"
+                    },
+                    "publicKey": {
+                        "description": "The public ingest key (`maple_pk_…`), safe for browsers and mobile apps.\n",
+                        "secret": true,
+                        "type": "string"
+                    },
+                    "publicRotatedAt": {
+                        "description": "When the public key was last rolled.\n",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "privateKey",
+                    "privateRotatedAt",
+                    "publicKey",
+                    "publicRotatedAt"
+                ],
+                "type": "object"
+            }
+        },
+        "pulumi:providers:maple/terraformConfig": {
+            "description": "This function returns a Terraform config object with terraform-namecased keys,to be used with the Terraform Module Provider.",
+            "inputs": {
+                "properties": {
+                    "__self__": {
+                        "type": "ref",
+                        "$ref": "#/provider"
+                    }
+                },
+                "type": "pulumi:providers:maple/terraformConfig",
+                "required": [
+                    "__self__"
+                ]
+            },
+            "outputs": {
+                "properties": {
+                    "result": {
+                        "additionalProperties": {
+                            "$ref": "pulumi.json#/Any"
+                        },
+                        "type": "object"
+                    }
+                },
+                "required": [
+                    "result"
+                ],
+                "type": "object"
+            }
+        }
+    }
+}

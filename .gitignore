@@ -1,0 +1,12 @@
+/bin/
+/.pulumi/
+/dist/
+sdk/nodejs/bin/
+sdk/nodejs/node_modules/
+sdk/python/bin/
+sdk/python/.venv/
+**/__pycache__/
+sdk/python/README.md
+node_modules/
+package-lock.json
+.venv/

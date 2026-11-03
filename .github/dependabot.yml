@@ -1,0 +1,14 @@
+version: 2
+updates:
+    # Includes terraform-provider-maple: a bump is followed by `make generate`.
+    - package-ecosystem: gomod
+      directory: /provider
+      schedule:
+          interval: weekly
+      groups:
+          go_modules:
+              patterns: ["*"]
+    - package-ecosystem: github-actions
+      directory: /
+      schedule:
+          interval: weekly

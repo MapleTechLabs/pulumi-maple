@@ -1,0 +1,3 @@
+name: maple-example
+runtime: nodejs
+description: Maple alerting, a dashboard and a CI key, managed with Pulumi.

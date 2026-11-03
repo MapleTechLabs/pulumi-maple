@@ -1,0 +1,3 @@
+name: maple
+description: A Pulumi resource provider for maple.
+language: schema

@@ -1,0 +1,24 @@
+# Provider plugin binaries. Pulumi downloads them from the GitHub release named in the
+# schema's pluginDownloadURL, so the archive names follow Pulumi's plugin convention.
+version: 2
+project_name: pulumi-maple
+builds:
+  - dir: provider
+    main: ./cmd/pulumi-resource-maple
+    binary: pulumi-resource-maple
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X github.com/MapleTechLabs/pulumi-maple/provider/pkg/version.Version={{ .Version }}
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+archives:
+  - formats: [tar.gz]
+    name_template: "pulumi-resource-maple-v{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    files: [none*]
+checksum:
+  name_template: "checksums.txt"
+changelog:
+  disable: true

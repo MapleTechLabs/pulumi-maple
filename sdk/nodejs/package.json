@@ -1,0 +1,29 @@
+{
+    "name": "@maple-dev/pulumi",
+    "version": "0.0.1-dev",
+    "description": "Manage Maple dashboards, alert rules, alert destinations, uptime monitors, scrape targets and API keys.",
+    "keywords": [
+        "maple",
+        "observability",
+        "opentelemetry",
+        "category/monitoring"
+    ],
+    "homepage": "https://maple.dev/docs/iac/pulumi",
+    "repository": "https://github.com/MapleTechLabs/pulumi-maple",
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@pulumi/pulumi": "^3.142.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20",
+        "typescript": "^4.7.0"
+    },
+    "pulumi": {
+        "resource": true,
+        "name": "maple",
+        "version": "0.0.1-dev",
+        "server": "github://api.github.com/MapleTechLabs/pulumi-maple"
+    }
+}
