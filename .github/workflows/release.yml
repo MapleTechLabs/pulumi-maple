@@ -60,6 +60,8 @@ jobs:
                   registry-url: https://registry.npmjs.org
 
             - uses: pulumi/actions@96c7761824268174e0d2a4e8c7d75671eebd24a7 # v7.1.0
+              with:
+                  pulumi-version-file: .pulumi-version
 
             - name: Build and publish
               run: |
@@ -92,6 +94,8 @@ jobs:
                   python-version: "3.12"
 
             - uses: pulumi/actions@96c7761824268174e0d2a4e8c7d75671eebd24a7 # v7.1.0
+              with:
+                  pulumi-version-file: .pulumi-version
 
             - name: Build
               run: make build_python VERSION="${GITHUB_REF_NAME#v}"
