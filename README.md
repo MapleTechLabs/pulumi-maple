@@ -64,7 +64,16 @@ export PATH="$PWD/bin:$PATH"
 
 ## Releasing
 
-Push a `vX.Y.Z` tag. The [release workflow](.github/workflows/release.yml) publishes the provider
-plugin binaries to the GitHub release (Pulumi downloads them from there), tags `sdk/vX.Y.Z` for
-the Go SDK, and publishes the npm package (`NPM_TOKEN`) and the PyPI package (trusted publishing,
-`pypi` environment).
+Versions come from [`@maple-dev/changesets`](https://github.com/MapleTechLabs/changesets). Add one
+with `npx changeset` in any PR that changes what users get. The
+[release workflow](.github/workflows/release.yml) keeps a "Version Packages" PR open; merging it
+tags `vX.Y.Z`, uploads the provider plugin binaries to that GitHub release (Pulumi downloads them
+from there), tags `sdk/vX.Y.Z` for the Go SDK, and publishes npm and PyPI. Both registries use
+trusted publishing (OIDC), so the repository holds no registry tokens:
+
+- npm: `npm trust github @maple-dev/pulumi --file release.yml --repo MapleTechLabs/pulumi-maple`
+- PyPI: a trusted publisher for this repository, workflow `release.yml`, environment `pypi`
+
+## License
+
+[MIT](LICENSE)

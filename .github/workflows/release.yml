@@ -2,14 +2,57 @@ name: Release
 
 on:
     push:
-        tags: ["v*"]
+        branches: [main]
+    workflow_dispatch:
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
     contents: read
 
 jobs:
+    # With changesets pending, opens or updates the "Version Packages" PR. Once it is merged,
+    # tags vX.Y.Z and cuts the GitHub release; the jobs below then build and publish from
+    # that tag. They run here, not on a tag push, because a tag pushed with GITHUB_TOKEN
+    # does not start workflows.
+    version:
+        name: Version or tag
+        # A manual run on another branch must never publish.
+        if: github.ref == 'refs/heads/main'
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        permissions:
+            contents: write
+            pull-requests: write
+        outputs:
+            published: ${{ steps.changesets.outputs.published }}
+            version: ${{ steps.version.outputs.version }}
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+            - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: 24
+
+            - run: npm ci --no-audit --no-fund
+
+            - id: changesets
+              uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+              with:
+                  version-script: npm run version-packages
+                  publish-script: npm run release
+                  commit-message: "chore: version packages"
+                  pr-title: "chore: version packages"
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - id: version
+              run: echo "version=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
+
     plugin:
-        name: Provider plugin
+        name: Provider plugin and Go SDK tag
+        needs: version
+        if: needs.version.outputs.published == 'true'
         runs-on: ubuntu-latest
         timeout-minutes: 30
         permissions:
@@ -17,6 +60,7 @@ jobs:
         steps:
             - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
               with:
+                  ref: v${{ needs.version.outputs.version }}
                   fetch-depth: 0
 
             - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -24,29 +68,34 @@ jobs:
                   go-version-file: provider/go.mod
                   cache-dependency-path: provider/go.sum
 
+            # Pulumi downloads the plugin from this release (the schema's pluginDownloadURL).
             - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
               with:
                   args: release --clean
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GORELEASER_CURRENT_TAG: v${{ needs.version.outputs.version }}
 
             # The Go SDK is its own module under sdk/, so it needs its own tag.
             - name: Tag the Go SDK
               run: |
-                  git tag "sdk/${GITHUB_REF_NAME}"
-                  git push origin "sdk/${GITHUB_REF_NAME}"
+                  tag="sdk/v${{ needs.version.outputs.version }}"
+                  git tag "$tag"
+                  git push origin "$tag"
 
     npm:
         name: npm
-        needs: plugin
+        needs: [version, plugin]
         runs-on: ubuntu-latest
         timeout-minutes: 20
         permissions:
             contents: read
+            # Trusted publishing (OIDC): no npm token. Configured with `npm trust github`.
             id-token: write
         steps:
             - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
               with:
+                  ref: v${{ needs.version.outputs.version }}
                   persist-credentials: false
 
             - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -54,10 +103,10 @@ jobs:
                   go-version-file: provider/go.mod
                   cache-dependency-path: provider/go.sum
 
+            # Node 24 ships npm 11, which trusted publishing needs.
             - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
-                  node-version: 22
-                  registry-url: https://registry.npmjs.org
+                  node-version: 24
 
             - uses: pulumi/actions@96c7761824268174e0d2a4e8c7d75671eebd24a7 # v7.1.0
               with:
@@ -65,23 +114,23 @@ jobs:
 
             - name: Build and publish
               run: |
-                  make build_nodejs VERSION="${GITHUB_REF_NAME#v}"
+                  make build_nodejs VERSION="${{ needs.version.outputs.version }}"
                   cd sdk/nodejs/bin && npm publish --access public --provenance
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     pypi:
         name: PyPI
-        needs: plugin
+        needs: [version, plugin]
         runs-on: ubuntu-latest
         timeout-minutes: 20
         environment: pypi
         permissions:
             contents: read
+            # Trusted publishing: a PyPI publisher for this repo, workflow and environment.
             id-token: write
         steps:
             - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
               with:
+                  ref: v${{ needs.version.outputs.version }}
                   persist-credentials: false
 
             - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -98,9 +147,8 @@ jobs:
                   pulumi-version-file: .pulumi-version
 
             - name: Build
-              run: make build_python VERSION="${GITHUB_REF_NAME#v}"
+              run: make build_python VERSION="${{ needs.version.outputs.version }}"
 
-            # Trusted publishing: register this repo and workflow on PyPI, no token.
             - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
               with:
                   packages-dir: sdk/python/bin/

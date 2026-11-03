@@ -10,6 +10,7 @@
     ],
     "homepage": "https://maple.dev/docs/iac/pulumi",
     "repository": "https://github.com/MapleTechLabs/pulumi-maple",
+    "license": "MIT",
     "scripts": {
         "build": "tsc"
     },

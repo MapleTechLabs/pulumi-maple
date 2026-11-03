@@ -6,6 +6,8 @@
   readme = "README.md"
   requires-python = ">=3.9"
   version = "0.0.1+dev"
+  [project.license]
+    text = "MIT"
   [project.urls]
     Homepage = "https://maple.dev/docs/iac/pulumi"
     Repository = "https://github.com/MapleTechLabs/pulumi-maple"

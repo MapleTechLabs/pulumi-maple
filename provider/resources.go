@@ -35,6 +35,7 @@ func Provider() tfbridge.ProviderInfo {
 		PluginDownloadURL: "github://api.github.com/MapleTechLabs/pulumi-maple",
 		Description:       "Manage Maple dashboards, alert rules, alert destinations, uptime monitors, scrape targets and API keys.",
 		Keywords:          []string{"maple", "observability", "opentelemetry", "category/monitoring"},
+		License:           "MIT",
 		Homepage:          "https://maple.dev/docs/iac/pulumi",
 		Repository:        "https://github.com/MapleTechLabs/pulumi-maple",
 		GitHubOrg:         "MapleTechLabs",

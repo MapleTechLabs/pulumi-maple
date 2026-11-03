@@ -22,3 +22,6 @@ checksum:
   name_template: "checksums.txt"
 changelog:
   disable: true
+release:
+  # changesets/action already cut the release for this tag; add the binaries to it.
+  mode: keep-existing
