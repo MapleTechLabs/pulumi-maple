@@ -112,9 +112,16 @@ jobs:
               with:
                   pulumi-version-file: .pulumi-version
 
+            # Skips a version already on npm: the first one was published by hand, since
+            # `npm trust` needs the package to exist.
             - name: Build and publish
               run: |
-                  make build_nodejs VERSION="${{ needs.version.outputs.version }}"
+                  version="${{ needs.version.outputs.version }}"
+                  if [ "$(npm view "@maple-dev/pulumi@$version" version 2>/dev/null)" = "$version" ]; then
+                    echo "@maple-dev/pulumi@$version is already on npm."
+                    exit 0
+                  fi
+                  make build_nodejs VERSION="$version"
                   cd sdk/nodejs/bin && npm publish --access public --provenance
 
     pypi:
@@ -152,3 +159,4 @@ jobs:
             - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
               with:
                   packages-dir: sdk/python/bin/
+                  skip-existing: true
