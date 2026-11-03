@@ -6,7 +6,7 @@ require (
 	github.com/MapleTechLabs/terraform-provider-maple v0.0.0-20261103232845-b6b8249a539f
 	github.com/pulumi/providertest v0.7.0
 	github.com/pulumi/pulumi-terraform-bridge/v3 v3.142.0
-	github.com/pulumi/pulumi/sdk/v3 v3.272.0
+	github.com/pulumi/pulumi/sdk/v3 v3.273.0
 )
 
 require (
@@ -83,7 +83,7 @@ require (
 	github.com/go-git/gcfg/v2 v2.0.2 // indirect
 	github.com/go-git/go-billy/v6 v6.0.0-beta.1 // indirect
 	github.com/go-git/go-git/v6 v6.0.0-beta.1 // indirect
-	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.6 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/godbus/dbus/v5 v5.2.2 // indirect
