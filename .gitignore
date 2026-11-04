@@ -3,10 +3,7 @@
 /dist/
 sdk/nodejs/bin/
 sdk/nodejs/node_modules/
-sdk/python/bin/
-sdk/python/.venv/
 **/__pycache__/
-sdk/python/README.md
 node_modules/
 examples/**/package-lock.json
 .venv/

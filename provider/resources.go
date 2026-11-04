@@ -47,11 +47,6 @@ func Provider() tfbridge.ProviderInfo {
 			PackageName:          "@maple-dev/pulumi",
 			RespectSchemaVersion: true,
 		},
-		Python: &tfbridge.PythonInfo{
-			PackageName:          "pulumi_maple",
-			RespectSchemaVersion: true,
-			PyProject:            struct{ Enabled bool }{true},
-		},
 		Golang: &tfbridge.GolangInfo{
 			ImportBasePath: path.Join(
 				"github.com/MapleTechLabs/pulumi-maple/sdk/",

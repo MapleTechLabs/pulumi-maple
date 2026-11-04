@@ -62,10 +62,6 @@ jobs:
               with:
                   node-version: 22
 
-            - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
-              with:
-                  python-version: "3.12"
-
             - uses: pulumi/actions@96c7761824268174e0d2a4e8c7d75671eebd24a7 # v7.1.0
               with:
                   pulumi-version-file: .pulumi-version
@@ -77,11 +73,3 @@ jobs:
               run: |
                   make build_nodejs
                   cd examples/typescript && npm install --no-audit --no-fund && npx tsc -p .
-
-            - name: Python SDK and the Python example
-              run: |
-                  make build_python
-                  cd sdk/python
-                  .venv/bin/pip install bin/*.whl
-                  .venv/bin/python -m py_compile ../../examples/python/__main__.py
-                  .venv/bin/python -c "import pulumi_maple as m; m.Dashboard; m.ApiKey; m.get_ingest_keys"

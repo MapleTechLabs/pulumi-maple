@@ -7,7 +7,6 @@ scrape targets and API keys from Pulumi programs, through the public
 | Language   | Package                                                       |
 | ---------- | ------------------------------------------------------------- |
 | TypeScript | `@maple-dev/pulumi`                                           |
-| Python     | `pulumi_maple`                                                |
 | Go         | `github.com/MapleTechLabs/pulumi-maple/sdk/go/maple`          |
 
 ```typescript
@@ -39,15 +38,14 @@ Differences from Terraform:
   ([pulumi/pulumi#12710](https://github.com/pulumi/pulumi/issues/12710)); wrap the keys with
   `pulumi.secret(...)` before exporting them.
 - **JSON attributes are strings** (dashboard `widgets`, uptime `config`, alert `thresholds`): pass
-  `JSON.stringify(...)` / `json.dumps(...)`. Defaults the API adds are not reported as drift.
+  `JSON.stringify(...)`. Defaults the API adds are not reported as drift.
 
 ## Develop
 
-Needs Go, the Pulumi CLI, and Node and Python 3.10+ for the SDK builds.
+Needs Go, the Pulumi CLI and Node.
 
-```bash
 make test       # mapping and secrets checks, then Pulumi YAML programs against an in-process fake API
-make generate   # schema.json and the Node, Python and Go SDKs; commit the result
+make generate   # schema.json and the Node and Go SDKs; commit the result
 make provider   # bin/pulumi-resource-maple
 ```
 
@@ -56,7 +54,6 @@ The lifecycle tests run Pulumi YAML programs, so they need no SDK build. They us
 
 To try a local build in a program:
 
-```bash
 make provider
 pulumi plugin rm resource maple --yes
 export PATH="$PWD/bin:$PATH"
@@ -68,12 +65,13 @@ Versions come from [`@maple-dev/changesets`](https://github.com/MapleTechLabs/ch
 with `npx changeset` in any PR that changes what users get. The
 [release workflow](.github/workflows/release.yml) keeps a "Version Packages" PR open; merging it
 tags `vX.Y.Z`, uploads the provider plugin binaries to that GitHub release (Pulumi downloads them
-from there), tags `sdk/vX.Y.Z` for the Go SDK, and publishes npm and PyPI. Both registries use
-trusted publishing (OIDC), so the repository holds no registry tokens:
+from there), tags `sdk/vX.Y.Z` for the Go SDK, and publishes to npm with trusted publishing
+(OIDC), so the repository holds no registry token. It was set up with npm 12+ (older CLIs get a
+400, since the registry now requires a permission):
 
-- npm: `npm trust github @maple-dev/pulumi --file release.yml --repo MapleTechLabs/pulumi-maple --allow-publish`
-  (npm 12+; older CLIs get a 400 because the registry now requires a permission)
-- PyPI: a trusted publisher for this repository, workflow `release.yml`, environment `pypi`
+```bash
+npm trust github @maple-dev/pulumi --file release.yml --repo MapleTechLabs/pulumi-maple --allow-publish
+```
 
 ## License
 

@@ -1,3 +1,0 @@
-name: maple-example-python
-runtime: python
-description: A Maple dashboard and a CI key, managed with Pulumi.

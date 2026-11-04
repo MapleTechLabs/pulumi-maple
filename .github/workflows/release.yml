@@ -124,39 +124,3 @@ jobs:
                   make build_nodejs VERSION="$version"
                   cd sdk/nodejs/bin && npm publish --access public --provenance
 
-    pypi:
-        name: PyPI
-        needs: [version, plugin]
-        runs-on: ubuntu-latest
-        timeout-minutes: 20
-        environment: pypi
-        permissions:
-            contents: read
-            # Trusted publishing: a PyPI publisher for this repo, workflow and environment.
-            id-token: write
-        steps:
-            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-              with:
-                  ref: v${{ needs.version.outputs.version }}
-                  persist-credentials: false
-
-            - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-              with:
-                  go-version-file: provider/go.mod
-                  cache-dependency-path: provider/go.sum
-
-            - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
-              with:
-                  python-version: "3.12"
-
-            - uses: pulumi/actions@96c7761824268174e0d2a4e8c7d75671eebd24a7 # v7.1.0
-              with:
-                  pulumi-version-file: .pulumi-version
-
-            - name: Build
-              run: make build_python VERSION="${{ needs.version.outputs.version }}"
-
-            - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
-              with:
-                  packages-dir: sdk/python/bin/
-                  skip-existing: true
