@@ -71,7 +71,8 @@ tags `vX.Y.Z`, uploads the provider plugin binaries to that GitHub release (Pulu
 from there), tags `sdk/vX.Y.Z` for the Go SDK, and publishes npm and PyPI. Both registries use
 trusted publishing (OIDC), so the repository holds no registry tokens:
 
-- npm: `npm trust github @maple-dev/pulumi --file release.yml --repo MapleTechLabs/pulumi-maple`
+- npm: `npm trust github @maple-dev/pulumi --file release.yml --repo MapleTechLabs/pulumi-maple --allow-publish`
+  (npm 12+; older CLIs get a 400 because the registry now requires a permission)
 - PyPI: a trusted publisher for this repository, workflow `release.yml`, environment `pypi`
 
 ## License
