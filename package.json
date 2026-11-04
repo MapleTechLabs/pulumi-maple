@@ -1,6 +1,6 @@
 {
     "name": "pulumi-maple",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "private": true,
     "description": "Release versioning for the Maple Pulumi provider. The published packages are generated under sdk/.",
     "license": "MIT",
