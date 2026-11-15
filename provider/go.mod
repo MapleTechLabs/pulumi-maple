@@ -3,7 +3,7 @@ module github.com/MapleTechLabs/pulumi-maple/provider
 go 1.26.10
 
 require (
-	github.com/MapleTechLabs/terraform-provider-maple v0.0.0-20261103232845-b6b8249a539f
+	github.com/MapleTechLabs/terraform-provider-maple v0.1.1-0.20261115180941-f1e1c8aaf9ed
 	github.com/pulumi/providertest v0.7.0
 	github.com/pulumi/pulumi-terraform-bridge/v3 v3.142.0
 	github.com/pulumi/pulumi/sdk/v3 v3.272.0

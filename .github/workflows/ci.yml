@@ -69,6 +69,14 @@ jobs:
             - name: Go SDK
               run: make build_go
 
+            # A changeset naming a package outside the workspace fails the release run on main.
+            # `changeset status` compares against main, so it needs main and the history down to it.
+            - name: Changesets are valid
+              run: |
+                  git fetch --no-tags --unshallow origin main
+                  git show-ref --verify -q refs/heads/main || git branch main FETCH_HEAD
+                  npm ci --no-audit --no-fund && npx changeset status
+
             - name: Node SDK and the TypeScript example
               run: |
                   make build_nodejs

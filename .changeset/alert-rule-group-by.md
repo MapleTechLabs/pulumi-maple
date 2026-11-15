@@ -1,5 +1,5 @@
 ---
-"@maple-dev/pulumi": minor
+"pulumi-maple": minor
 ---
 
 `AlertRule.groupBies` is now `groupBy`, matching the Terraform `group_by` attribute. Rename it in
