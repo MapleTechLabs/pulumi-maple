@@ -1,5 +1,5 @@
 ---
-"@maple-dev/pulumi": patch
+"pulumi-maple": patch
 ---
 
 API calls identify as `pulumi-maple/<version>` instead of the Terraform provider. The schema logo
