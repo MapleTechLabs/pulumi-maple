@@ -31,7 +31,7 @@ func Provider() tfbridge.ProviderInfo {
 		DisplayName:       "Maple",
 		Version:           version.Version,
 		Publisher:         "Maple",
-		LogoURL:           "https://maple.dev/favicon.png",
+		LogoURL:           "https://maple.dev/logo512.png",
 		PluginDownloadURL: "github://api.github.com/MapleTechLabs/pulumi-maple",
 		Description:       "Manage Maple dashboards, alert rules, alert destinations, uptime monitors, scrape targets and API keys.",
 		Keywords:          []string{"maple", "observability", "opentelemetry", "category/monitoring"},
@@ -57,6 +57,10 @@ func Provider() tfbridge.ProviderInfo {
 			GenerateResourceContainerTypes: true,
 			GenerateExtraInputTypes:        true,
 			RespectSchemaVersion:           true,
+		},
+		Resources: map[string]*tfbridge.ResourceInfo{
+			// The bridge pluralizes list attributes, which turns group_by into "groupBies".
+			"maple_alert_rule": {Fields: map[string]*tfbridge.SchemaInfo{"group_by": {Name: "groupBy"}}},
 		},
 	}
 

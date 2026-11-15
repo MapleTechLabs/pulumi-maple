@@ -130,7 +130,7 @@ export class AlertRule extends pulumi.CustomResource {
     /**
      * Evaluate each group separately, e.g. `["service.name"]`.
      */
-    declare public readonly groupBies: pulumi.Output<string[] | undefined>;
+    declare public readonly groupBy: pulumi.Output<string[] | undefined>;
     /**
      * Skip windows with fewer samples than this.
      */
@@ -220,7 +220,7 @@ export class AlertRule extends pulumi.CustomResource {
             resourceInputs["environments"] = state?.environments;
             resourceInputs["evaluationIntervalMinutes"] = state?.evaluationIntervalMinutes;
             resourceInputs["excludeServiceNames"] = state?.excludeServiceNames;
-            resourceInputs["groupBies"] = state?.groupBies;
+            resourceInputs["groupBy"] = state?.groupBy;
             resourceInputs["minimumSampleCount"] = state?.minimumSampleCount;
             resourceInputs["name"] = state?.name;
             resourceInputs["notes"] = state?.notes;
@@ -262,7 +262,7 @@ export class AlertRule extends pulumi.CustomResource {
             resourceInputs["environments"] = args?.environments;
             resourceInputs["evaluationIntervalMinutes"] = args?.evaluationIntervalMinutes;
             resourceInputs["excludeServiceNames"] = args?.excludeServiceNames;
-            resourceInputs["groupBies"] = args?.groupBies;
+            resourceInputs["groupBy"] = args?.groupBy;
             resourceInputs["minimumSampleCount"] = args?.minimumSampleCount;
             resourceInputs["name"] = args?.name;
             resourceInputs["notes"] = args?.notes;
@@ -336,7 +336,7 @@ export interface AlertRuleState {
     /**
      * Evaluate each group separately, e.g. `["service.name"]`.
      */
-    groupBies?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+    groupBy?: pulumi.Input<pulumi.Input<string>[] | undefined>;
     /**
      * Skip windows with fewer samples than this.
      */
@@ -454,7 +454,7 @@ export interface AlertRuleArgs {
     /**
      * Evaluate each group separately, e.g. `["service.name"]`.
      */
-    groupBies?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+    groupBy?: pulumi.Input<pulumi.Input<string>[] | undefined>;
     /**
      * Skip windows with fewer samples than this.
      */
