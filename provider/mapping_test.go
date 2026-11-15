@@ -3,6 +3,7 @@ package maple
 import (
 	"encoding/json"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge"
@@ -56,6 +57,9 @@ func TestUpstreamSchemaIsFullyMappedWithSecrets(t *testing.T) {
 		}
 		res.Schema().Range(func(attr string, sch shim.Schema) bool {
 			prop := tfbridge.TerraformToPulumiNameV2(attr, res.Schema(), info.Fields)
+			if want := camelCase(attr); prop != want {
+				t.Errorf("%s.%s is %q in Pulumi; map it to %q in resources.go", info.Tok, attr, prop, want)
+			}
 			if sch.Sensitive() && !spec.Properties[prop].Secret {
 				t.Errorf("%s.%s is sensitive in Terraform but not a secret in Pulumi", info.Tok, prop)
 			}
@@ -84,4 +88,14 @@ func TestUpstreamSchemaIsFullyMappedWithSecrets(t *testing.T) {
 		})
 		return true
 	})
+}
+
+// camelCase is the Pulumi name a Terraform attribute should get. The bridge pluralizes
+// list attributes on its own (group_by became "groupBies"), which this rules out.
+func camelCase(attr string) string {
+	parts := strings.Split(attr, "_")
+	for i := 1; i < len(parts); i++ {
+		parts[i] = strings.ToUpper(parts[i][:1]) + parts[i][1:]
+	}
+	return strings.Join(parts, "")
 }

@@ -12,7 +12,7 @@
     "license": "MIT",
     "attribution": "This Pulumi package is based on the [`maple` Terraform Provider](https://github.com/MapleTechLabs/terraform-provider-maple).",
     "repository": "https://github.com/MapleTechLabs/pulumi-maple",
-    "logoUrl": "https://maple.dev/favicon.png",
+    "logoUrl": "https://maple.dev/logo512.png",
     "pluginDownloadURL": "github://api.github.com/MapleTechLabs/pulumi-maple",
     "publisher": "Maple",
     "meta": {
@@ -345,7 +345,7 @@
                     },
                     "description": "Skip these services.\n"
                 },
-                "groupBies": {
+                "groupBy": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -493,7 +493,7 @@
                     },
                     "description": "Skip these services.\n"
                 },
-                "groupBies": {
+                "groupBy": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -633,7 +633,7 @@
                         },
                         "description": "Skip these services.\n"
                     },
-                    "groupBies": {
+                    "groupBy": {
                         "type": "array",
                         "items": {
                             "type": "string"

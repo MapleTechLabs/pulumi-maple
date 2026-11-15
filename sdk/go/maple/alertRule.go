@@ -124,7 +124,7 @@ type AlertRule struct {
 	// Skip these services.
 	ExcludeServiceNames pulumi.StringArrayOutput `pulumi:"excludeServiceNames"`
 	// Evaluate each group separately, e.g. `["service.name"]`.
-	GroupBies pulumi.StringArrayOutput `pulumi:"groupBies"`
+	GroupBy pulumi.StringArrayOutput `pulumi:"groupBy"`
 	// Skip windows with fewer samples than this.
 	MinimumSampleCount pulumi.IntOutput `pulumi:"minimumSampleCount"`
 	// Rule name, unique in the organization.
@@ -224,7 +224,7 @@ type alertRuleState struct {
 	// Skip these services.
 	ExcludeServiceNames []string `pulumi:"excludeServiceNames"`
 	// Evaluate each group separately, e.g. `["service.name"]`.
-	GroupBies []string `pulumi:"groupBies"`
+	GroupBy []string `pulumi:"groupBy"`
 	// Skip windows with fewer samples than this.
 	MinimumSampleCount *int `pulumi:"minimumSampleCount"`
 	// Rule name, unique in the organization.
@@ -283,7 +283,7 @@ type AlertRuleState struct {
 	// Skip these services.
 	ExcludeServiceNames pulumi.StringArrayInput
 	// Evaluate each group separately, e.g. `["service.name"]`.
-	GroupBies pulumi.StringArrayInput
+	GroupBy pulumi.StringArrayInput
 	// Skip windows with fewer samples than this.
 	MinimumSampleCount pulumi.IntPtrInput
 	// Rule name, unique in the organization.
@@ -346,7 +346,7 @@ type alertRuleArgs struct {
 	// Skip these services.
 	ExcludeServiceNames []string `pulumi:"excludeServiceNames"`
 	// Evaluate each group separately, e.g. `["service.name"]`.
-	GroupBies []string `pulumi:"groupBies"`
+	GroupBy []string `pulumi:"groupBy"`
 	// Skip windows with fewer samples than this.
 	MinimumSampleCount *int `pulumi:"minimumSampleCount"`
 	// Rule name, unique in the organization.
@@ -406,7 +406,7 @@ type AlertRuleArgs struct {
 	// Skip these services.
 	ExcludeServiceNames pulumi.StringArrayInput
 	// Evaluate each group separately, e.g. `["service.name"]`.
-	GroupBies pulumi.StringArrayInput
+	GroupBy pulumi.StringArrayInput
 	// Skip windows with fewer samples than this.
 	MinimumSampleCount pulumi.IntPtrInput
 	// Rule name, unique in the organization.
@@ -584,8 +584,8 @@ func (o AlertRuleOutput) ExcludeServiceNames() pulumi.StringArrayOutput {
 }
 
 // Evaluate each group separately, e.g. `["service.name"]`.
-func (o AlertRuleOutput) GroupBies() pulumi.StringArrayOutput {
-	return o.ApplyT(func(v *AlertRule) pulumi.StringArrayOutput { return v.GroupBies }).(pulumi.StringArrayOutput)
+func (o AlertRuleOutput) GroupBy() pulumi.StringArrayOutput {
+	return o.ApplyT(func(v *AlertRule) pulumi.StringArrayOutput { return v.GroupBy }).(pulumi.StringArrayOutput)
 }
 
 // Skip windows with fewer samples than this.

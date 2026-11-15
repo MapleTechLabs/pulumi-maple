@@ -76,12 +76,24 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   GORELEASER_CURRENT_TAG: v${{ needs.version.outputs.version }}
 
-            # The Go SDK is its own module under sdk/, so it needs its own tag.
+            - uses: pulumi/actions@96c7761824268174e0d2a4e8c7d75671eebd24a7 # v7.1.0
+              with:
+                  pulumi-version-file: .pulumi-version
+
+            # The Go SDK is its own module under sdk/, so it needs its own tag. main holds it
+            # at the dev version, which has no plugin release, so the tag points at a commit
+            # off main that regenerates it at the release version.
             - name: Tag the Go SDK
               run: |
-                  tag="sdk/v${{ needs.version.outputs.version }}"
-                  git tag "$tag"
-                  git push origin "$tag"
+                  version="${{ needs.version.outputs.version }}"
+                  make sdk_go VERSION="$version"
+                  grep -q "\"version\": \"$version\"" sdk/go/maple/pulumi-plugin.json
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git add sdk/go
+                  git commit -m "chore: Go SDK $version"
+                  git tag "sdk/v$version"
+                  git push origin "sdk/v$version"
 
     npm:
         name: npm
