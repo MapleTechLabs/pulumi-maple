@@ -24,14 +24,15 @@ var metadata []byte
 // Provider maps every resource and data source of the Terraform provider into the
 // maple:index module. Sensitive Terraform attributes become Pulumi secrets.
 // WithRotateReplaces: Pulumi cannot take the new ID an in-place key roll returns.
+// WithUserAgent: API calls identify as pulumi-maple, not terraform-provider-maple.
 func Provider() tfbridge.ProviderInfo {
 	prov := tfbridge.ProviderInfo{
-		P:                 pfbridge.ShimProvider(tfmaple.New(version.Version, tfmaple.WithRotateReplaces())()),
+		P:                 pfbridge.ShimProvider(tfmaple.New(version.Version, tfmaple.WithRotateReplaces(), tfmaple.WithUserAgent("pulumi-maple"))()),
 		Name:              "maple",
 		DisplayName:       "Maple",
 		Version:           version.Version,
 		Publisher:         "Maple",
-		LogoURL:           "https://maple.dev/logo512.png",
+		LogoURL:           "https://maple.dev/brand/wordmark/maple-lockup-primary.svg",
 		PluginDownloadURL: "github://api.github.com/MapleTechLabs/pulumi-maple",
 		Description:       "Manage Maple dashboards, alert rules, alert destinations, uptime monitors, scrape targets and API keys.",
 		Keywords:          []string{"maple", "observability", "opentelemetry", "category/monitoring"},

@@ -221,6 +221,11 @@ outputs:
 	if got := pt.Up(t).Outputs["privateKey"].Value; got != "maple_sk_test" {
 		t.Errorf("privateKey = %v", got)
 	}
+	for _, ua := range api.UserAgents() {
+		if !strings.HasPrefix(ua, "pulumi-maple/") {
+			t.Errorf("User-Agent %q, want pulumi-maple/<version>", ua)
+		}
+	}
 }
 
 // An existing dashboard imported with the same program has no diff: the API's
