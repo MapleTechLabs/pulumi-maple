@@ -65,8 +65,8 @@ Declare the provider in your program, then run `pulumi install`:
 terraform {
   required_providers {
     maple = {
-      source  = "mapletechlabs/maple"
-      version = "~> 0.1"
+      source  = "pulumi/maple"
+      version = "0.2.0"
     }
   }
 }
